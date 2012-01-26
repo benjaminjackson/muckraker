@@ -1,1 +1,1 @@
-require 'lib/muckraker'
+require './lib/muckraker'

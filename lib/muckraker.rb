@@ -9,7 +9,7 @@ class Muckraker
                  :MA, :MI, :MN, :MS, :MO, :MT, :NE, :NV, :NH, :NJ, :NM, :NY, :NC, :ND, :OH, :OK, :OR, :PA, :RI, :SC, 
                  :SD, :TN, :TX, :UT, :VT, :VA, :WA, :WV, :WI, :WY]
 
-    attr_accessor :candidates, :contributors
+    attr_accessor :candidates
 
     def initialize(api_key)
    		Base.api_key = api_key
@@ -18,11 +18,19 @@ class Muckraker
     def load
     	load_candidates
     	@expenditures = []
-  		@contributors = {}
     	@candidates.each do |candidate|
     		load_expenditures(candidate.candidate_id)
-    	end
-		
+    	end		
+    end
+
+    def total_contributions_by_contributor
+  		contributors = {}
+		@expenditures.each do |exp|
+            payee_name = exp.payee + " (#{exp.support_or_oppose == 'O' ? 'Against' : 'For'})"
+	    	contributors[payee_name] ||= 0
+	    	contributors[payee_name] += exp.amount
+	    end
+        contributors
     end
 
     private
@@ -36,10 +44,7 @@ class Muckraker
     def load_expenditures(candidate_id, year=2012)
 		candidate_expenditures = IndependentExpenditure.candidate(candidate_id, year)
     	@expenditures << candidate_expenditures
-		candidate_expenditures.each do |exp|
-		    payee_name = exp.payee + " (#{exp.support_or_oppose == 'O' ? 'Against' : 'For'})"
-	    	@contributors[payee_name] ||= 0
-	    	@contributors[payee_name] += exp.amount
-	    end
+        @expenditures.flatten!
     end
+
 end

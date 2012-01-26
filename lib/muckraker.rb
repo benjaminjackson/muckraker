@@ -25,6 +25,8 @@ class Muckraker
 		
     end
 
+    private
+
     def load_candidates
     	@candidates = US_STATES.map do |state|
   			Candidate.state_chamber(state, 'senate') + Candidate.state_chamber(state, 'house')
@@ -32,7 +34,6 @@ class Muckraker
     end
 
     def load_expenditures(candidate_id, year=2012)
-    	@expenditures ||= {}
 		candidate_expenditures = IndependentExpenditure.candidate(candidate_id, year)
     	@expenditures << candidate_expenditures
 		candidate_expenditures.each do |exp|

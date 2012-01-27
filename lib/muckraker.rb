@@ -2,6 +2,13 @@ require 'rubygems'
 require 'campaign_cash'
 require 'yaml'
 require 'fileutils'
+require 'titlecase'
+
+class String
+    def normalize
+        downcase.titlecase.gsub(/[,]/i, '')
+    end
+end
 
 class DataSet
     attr_accessor :legend, :data
@@ -65,7 +72,7 @@ class Muckraker
 
         @payees = {}
         filtered_expenditures.each do |exp|
-            payee_name = exp.payee
+            payee_name = exp.payee.normalize # normalize against differences in names (e.g. , LLC vs. just LLC)
             if support_or_oppose
                 payee_name += " (#{support_or_oppose == 'O' ? 'Against' : 'For'})" 
             end

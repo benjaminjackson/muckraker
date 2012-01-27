@@ -38,7 +38,7 @@ describe Muckraker, "when calculating the top contributors" do
 
 	describe "for both parties" do 
 		it "should return all payees in order of who contributed the most" do
-			@muckraker.top_payees.legend.should == [@top_expenditure.payee, @expenditure.payee, @another_expenditure.payee]
+			@muckraker.top_payees.legend.should == [@top_expenditure.payee.normalize, @expenditure.payee.normalize, @another_expenditure.payee.normalize]
 		end
 	end
 
@@ -47,7 +47,7 @@ describe Muckraker, "when calculating the top contributors" do
 			@candidate.stub(:party).and_return('REP')
 			@muckraker.top_payees('DEM').legend.should == []
 			@candidate.stub(:party).and_return('DEM')
-			@muckraker.top_payees('DEM').legend.should == [@top_expenditure.payee, @expenditure.payee, @another_expenditure.payee]
+			@muckraker.top_payees('DEM').legend.should == [@top_expenditure.payee.normalize, @expenditure.payee.normalize, @another_expenditure.payee.normalize]
 		end
 	end
 
@@ -56,7 +56,7 @@ describe Muckraker, "when calculating the top contributors" do
 			@candidate.stub(:party).and_return('DEM')
 			@muckraker.top_payees('REP').legend.should == []
 			@candidate.stub(:party).and_return('REP')
-			@muckraker.top_payees('REP').legend.should == [@top_expenditure.payee, @expenditure.payee, @another_expenditure.payee]
+			@muckraker.top_payees('REP').legend.should == [@top_expenditure.payee.normalize, @expenditure.payee.normalize, @another_expenditure.payee.normalize]
 		end
 	end
 end

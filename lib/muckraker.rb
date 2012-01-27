@@ -3,6 +3,7 @@ require 'campaign_cash'
 require 'yaml'
 require 'fileutils'
 require 'titlecase'
+require 'erb'
 
 class String
     def normalize
@@ -11,11 +12,16 @@ class String
 end
 
 class DataSet
-    attr_accessor :legend, :data
+    attr_accessor :legend, :data, :columns, :chart_type
 
-    def initialize legend, data
+    def initialize legend, data, columns
         @legend = legend
         @data = data
+        @columns = columns
+    end
+
+    def chart_type
+        @chart_type || "PieChart"
     end
 end
 
@@ -30,6 +36,8 @@ class Muckraker
     CACHE_DIR = File.expand_path "~/.muckraker/cache"
     CANDIDATES_CACHE_FILENAME = 'candidates.yaml'
     EXPENDITURES_CACHE_FILENAME = 'expenditures.yaml'
+
+    TEMPLATE_FILENAME = 'template.html.erb'
 
     attr_accessor :cache, :candidates, :expenditures, :payees
 
@@ -52,6 +60,13 @@ class Muckraker
             load_expenditures
         end
         generate_candidate_id_map
+    end
+
+    def chart data_sets, title
+        @data_sets = data_sets
+        @chart_title = title
+        template = File.open(File.join(File.dirname(__FILE__), TEMPLATE_FILENAME)).read
+        return ERB.new(template).result(binding)
     end
 
     def top_payees(party=nil, support_or_oppose=nil)
@@ -86,8 +101,8 @@ class Muckraker
         payee_names.each do |payee_name|
             data << @payees[payee_name]
         end
-
-        DataSet.new(payee_names, data)
+        columns = { :names => ['Payee', 'Amount'], :types => ['string', 'number'] }
+        DataSet.new(payee_names, data, columns)
     end
 
     private

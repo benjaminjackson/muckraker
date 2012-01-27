@@ -20,4 +20,37 @@ describe Muckraker, "when loading data" do
 		IndependentExpenditure.should_receive(:candidate).with('P60003654', 2012).and_return([@expenditure])
 		@muckraker.load
     end
+    describe "when setting cache to true" do
+    	it "should create the cache directory" do
+    		FileUtils.should_receive(:mkdir_p).with(Muckraker::CACHE_DIR)
+    		@muckraker.cache = true
+    	end
+	end
+    describe "with cache set to true and no cached data" do
+    	before do
+    		clear_cache
+    		@muckraker.cache = true
+    	end
+    	it "should write the data to cache" do
+    		YAML::should_receive(:dump).with([@candidate]).and_return("")
+    		YAML::should_receive(:dump).with([@expenditure]).and_return("")
+    		@muckraker.load
+    	end
+	end
+    describe "with cache set to true and existing cached data" do
+    	before do
+    		@muckraker.cache = true
+			@muckraker.load    		
+    	end
+    	it "should read the data from cache" do
+    		YAML::should_receive(:load).with(File.join(Muckraker::CACHE_DIR, Muckraker::CANDIDATES_CACHE_FILENAME)).and_return("")
+    		YAML::should_receive(:load).with(File.join(Muckraker::CACHE_DIR, Muckraker::EXPENDITURES_CACHE_FILENAME)).and_return("")
+    		@muckraker.load
+    	end
+    	it "should not hit the server" do
+    		Candidate.should_not_receive(:state_chamber)
+    		IndependentExpenditure.should_not_receive(:candidate)
+    		@muckraker.load
+    	end
+    end
 end

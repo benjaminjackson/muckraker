@@ -3,6 +3,15 @@ require 'campaign_cash'
 require 'yaml'
 require 'fileutils'
 
+class DataSet
+    attr_accessor :legend, :data
+
+    def initialize legend, data
+        @legend = legend
+        @data = data
+    end
+end
+
 class Muckraker
 
 	include CampaignCash
@@ -34,25 +43,59 @@ class Muckraker
         else 
             load_candidates
             load_expenditures
+            generate_candidate_id_map
         end
     end
+
+    def top_payees(party=nil, support_or_oppose=nil)
+
+        # party is one of 'REP' or 'DEM'
+        # support_or_oppose is one of 'O' or 'S'
+
+        filtered_expenditures = @expenditures
+        unless support_or_oppose.nil?
+            filtered_expenditures = filtered_expenditures.reject { |exp| exp.support_or_oppose != support_or_oppose }
+        end
+        unless party.nil?
+            filtered_expenditures = filtered_expenditures.reject do |exp| 
+                candidate = @candidate_id_map[exp.candidate]
+                candidate.party != party
+            end
+        end
+
+        @payees = {}
+        filtered_expenditures.each do |exp|
+            payee_name = exp.payee
+            if support_or_oppose
+                payee_name += " (#{support_or_oppose == 'O' ? 'Against' : 'For'})" 
+            end
+            @payees[payee_name] ||= 0
+            @payees[payee_name] += exp.amount
+        end
+        payee_names = payees.keys.sort do |a, b|
+          @payees[b] <=> @payees[a]
+        end
+        data = []
+        payee_names.each do |payee_name|
+            data << @payees[payee_name]
+        end
+
+        DataSet.new(payee_names, data)
+    end
+
+    private
 
     def load_from_cache
         @candidates = YAML::load File.join(CACHE_DIR, CANDIDATES_CACHE_FILENAME)
         @expenditures = YAML::load File.join(CACHE_DIR, EXPENDITURES_CACHE_FILENAME)
     end
 
-    def total_contributions_by_contributor
-  		contributors = {}
-		@expenditures.each do |exp|
-            payee_name = exp.payee + " (#{exp.support_or_oppose == 'O' ? 'Against' : 'For'})"
-	    	contributors[payee_name] ||= 0
-	    	contributors[payee_name] += exp.amount
-	    end
-        contributors
+    def generate_candidate_id_map
+        @candidate_id_map = {}
+        @candidates.each do |candidate|
+            @candidate_id_map[candidate.id] = candidate
+        end
     end
-
-    private
 
     def load_candidates
     	@candidates = US_STATES.map do |state|

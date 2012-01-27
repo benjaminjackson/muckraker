@@ -38,16 +38,19 @@ def load_expenditures
 	@top_expenditure.stub(:support_or_oppose).and_return("S")
 	@top_expenditure.stub(:amount).and_return(TOP_EXPENDITURE)
 
-	@candidate = mock('candidate')
-	@candidate.stub(:id).and_return('P60003654')
-	@candidate.stub(:party).and_return('REP')
-	IndependentExpenditure.stub(:candidate).and_return([@expenditure, @another_expenditure, @top_expenditure])
-	Candidate.stub(:state_chamber).and_return([])
-	Candidate.stub(:state_chamber).with(:DE, 'house').and_return([@candidate])
+	@republican = mock('republican candidate', :id => 'P60003654', :party => 'REP', :name => 'Joe Schmoe')
+	@democrat = mock('democratic candidate', :id => 'P60003655', :party => 'DEM', :name => 'Jack Whack')
 
-	[@expenditure, @another_expenditure, @top_expenditure].each do |exp|
-		exp.stub(:candidate).and_return(@candidate.id)
+	IndependentExpenditure.stub(:candidate).with(@republican.id, 2012).and_return([@expenditure, @another_expenditure])
+	IndependentExpenditure.stub(:candidate).with(@democrat.id, 2012).and_return([@top_expenditure])
+	
+	Candidate.stub(:state_chamber).and_return([])
+	Candidate.stub(:state_chamber).with(:DE, 'house').and_return([@republican, @democrat])
+
+	[@expenditure, @another_expenditure].each do |exp|
+		exp.stub(:candidate).and_return(@republican.id)
 	end
+	@top_expenditure.stub(:candidate).and_return(@democrat.id)
 
 	@muckraker.load
 end

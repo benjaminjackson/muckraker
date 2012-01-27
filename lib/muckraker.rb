@@ -85,24 +85,33 @@ class Muckraker
             end
         end
 
-        payees = {}
-        filtered_expenditures.each do |exp|
-            payee_name = exp.payee.normalize # normalize against differences in names (e.g. , LLC vs. just LLC)
-            payees[payee_name] ||= 0
-            payees[payee_name] += exp.amount
-        end
-        payee_names = payees.keys.sort do |a, b|
-          payees[b] <=> payees[a]
-        end
-        data = []
-        payee_names.each do |payee_name|
-            data << payees[payee_name]
-        end
+        payee_names, data = top_payees_from_list(filtered_expenditures)
         columns = { :names => ['Payee', 'Amount'], :types => ['string', 'number'] }
         title = "Top Payees"
         title += " #{support_or_oppose == 'O' ? 'Opposing' : 'Supporting'}" if support_or_oppose
         title += " #{party == 'REP' ? 'Republicans' : 'Democrats'}" if party
         DataSet.new(title, payee_names, data, columns)
+    end
+
+    def top_payees_for_candidate candidate_id, support_or_oppose=nil
+        candidate = @candidate_id_map[candidate_id]
+        filtered_expenditures = []
+        @expenditures.each do |exp|
+            if exp.candidate == candidate_id
+                filtered_expenditures << exp
+            end
+        end
+        if support_or_oppose
+            filtered_expenditures.reject! { |exp| exp.support_or_oppose != support_or_oppose }
+        end
+
+        payee_names, data = top_payees_from_list(filtered_expenditures)
+        columns = { :names => ['Payee', 'Amount'], :types => ['string', 'number'] }
+        title = "Top Payees: "
+        title += "#{support_or_oppose == 'O' ? 'Opposing' : 'Supporting'} " if support_or_oppose
+        title += candidate.name + " (#{candidate.party}) "
+        DataSet.new(title, payee_names, data, columns)
+
     end
 
     private
@@ -155,6 +164,23 @@ class Muckraker
         @expenditures.flatten!
     end
 
+    def top_payees_from_list expenditures
+        payees = {}
+        expenditures.each do |exp|
+            payee_name = exp.payee.normalize # normalize against differences in names (e.g. , LLC vs. just LLC)
+            payees[payee_name] ||= 0
+            payees[payee_name] += exp.amount
+        end
+        payee_names = payees.keys.sort do |a, b|
+          payees[b] <=> payees[a]
+        end
+        data = []
+        payee_names.each do |payee_name|
+            data << payees[payee_name]
+        end
+        [payee_names, data]
+    end
+
 end
 
 # Usage: 
@@ -163,4 +189,9 @@ end
 # m = Muckraker.new(API_KEY)
 # m.cache = true
 # m.load
+# # Chart top payees for everyone
 # puts m.chart([m.top_payees, m.top_payees("REP"), m.top_payees("DEM"), m.top_payees("REP", "S"), m.top_payees("DEM", "O"), m.top_payees("DEM", "S"), m.top_payees("REP", "O")])
+# # Chart top payees per candidate
+# payees = m.candidates.map { |candidate| m.top_payees_for_candidate(candidate.id) }
+# payees.reject! { |data_set| data_set.data.empty? }
+# puts m.chart(payees)

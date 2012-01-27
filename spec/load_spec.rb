@@ -2,6 +2,7 @@ require "#{File.dirname(__FILE__)}/spec_helper"
 
 describe Muckraker, "when loading data" do
 	before do
+       clear_cache
 		prepare_for_load
 	end
 	it "should retrieve all candidates" do

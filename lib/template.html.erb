@@ -32,13 +32,13 @@
         ]);
 
         // Set chart options
-        var options = {'title':'<%= @chart_title %>', 'width':<%= @chart_width || 480 %>, 'height':<%= @chart_height || 320%>};
+        var options = {'title':'<%= data_set.title %>', 'width':<%= @chart_width || 480 %>, 'height':<%= @chart_height || 320%>};
 
         // Instantiate and draw our chart, passing in some options.
         var chart = new google.visualization.<%= data_set.chart_type %>(document.getElementById('chart_<%= index %>'));
         chart.draw(data, options);
+        <% end %>
       }
-      <% end %>
     </script>
 </head>
 <body>

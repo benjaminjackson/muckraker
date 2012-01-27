@@ -40,6 +40,7 @@ def load_expenditures
 
 	@candidate = mock('candidate')
 	@candidate.stub(:id).and_return('P60003654')
+	@candidate.stub(:party).and_return('REP')
 	IndependentExpenditure.stub(:candidate).and_return([@expenditure, @another_expenditure, @top_expenditure])
 	Candidate.stub(:state_chamber).and_return([])
 	Candidate.stub(:state_chamber).with(:DE, 'house').and_return([@candidate])

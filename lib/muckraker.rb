@@ -12,9 +12,10 @@ class String
 end
 
 class DataSet
-    attr_accessor :legend, :data, :columns, :chart_type
+    attr_accessor :title, :legend, :data, :columns, :chart_type
 
-    def initialize legend, data, columns
+    def initialize title, legend, data, columns
+        @title = title
         @legend = legend
         @data = data
         @columns = columns
@@ -62,9 +63,8 @@ class Muckraker
         generate_candidate_id_map
     end
 
-    def chart data_sets, title
+    def chart data_sets
         @data_sets = data_sets
-        @chart_title = title
         template = File.open(File.join(File.dirname(__FILE__), TEMPLATE_FILENAME)).read
         return ERB.new(template).result(binding)
     end
@@ -85,24 +85,24 @@ class Muckraker
             end
         end
 
-        @payees = {}
+        payees = {}
         filtered_expenditures.each do |exp|
             payee_name = exp.payee.normalize # normalize against differences in names (e.g. , LLC vs. just LLC)
-            if support_or_oppose
-                payee_name += " (#{support_or_oppose == 'O' ? 'Against' : 'For'})" 
-            end
-            @payees[payee_name] ||= 0
-            @payees[payee_name] += exp.amount
+            payees[payee_name] ||= 0
+            payees[payee_name] += exp.amount
         end
         payee_names = payees.keys.sort do |a, b|
-          @payees[b] <=> @payees[a]
+          payees[b] <=> payees[a]
         end
         data = []
         payee_names.each do |payee_name|
-            data << @payees[payee_name]
+            data << payees[payee_name]
         end
         columns = { :names => ['Payee', 'Amount'], :types => ['string', 'number'] }
-        DataSet.new(payee_names, data, columns)
+        title = "Top Payees"
+        title += " #{support_or_oppose == 'O' ? 'Opposing' : 'Supporting'}" if support_or_oppose
+        title += " #{party == 'REP' ? 'Republicans' : 'Democrats'}" if party
+        DataSet.new(title, payee_names, data, columns)
     end
 
     private
@@ -163,3 +163,4 @@ end
 # m = Muckraker.new(API_KEY)
 # m.cache = true
 # m.load
+# puts m.chart([m.top_payees, m.top_payees("REP"), m.top_payees("DEM"), m.top_payees("REP", "S"), m.top_payees("DEM", "O"), m.top_payees("DEM", "S"), m.top_payees("REP", "O")])

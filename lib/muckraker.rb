@@ -93,8 +93,8 @@ class Muckraker
     private
 
     def load_from_cache
-        @candidates = YAML::load File.join(CACHE_DIR, CANDIDATES_CACHE_FILENAME)
-        @expenditures = YAML::load File.join(CACHE_DIR, EXPENDITURES_CACHE_FILENAME)
+        @candidates = YAML::load File.open(File.join(CACHE_DIR, CANDIDATES_CACHE_FILENAME)).read
+        @expenditures = YAML::load File.open(File.join(CACHE_DIR, EXPENDITURES_CACHE_FILENAME)).read
     end
 
     def generate_candidate_id_map

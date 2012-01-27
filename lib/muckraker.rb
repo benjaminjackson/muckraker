@@ -50,8 +50,8 @@ class Muckraker
         else 
             load_candidates
             load_expenditures
-            generate_candidate_id_map
         end
+        generate_candidate_id_map
     end
 
     def top_payees(party=nil, support_or_oppose=nil)

@@ -20,6 +20,10 @@ describe Muckraker, "when loading data" do
 		IndependentExpenditure.should_receive(:candidate).with('P60003654', 2012).and_return([@expenditure])
 		@muckraker.load
     end
+    it "should generate a hash with all candidates mapped to their candidate id" do
+        @muckraker.should_receive(:generate_candidate_id_map)
+        @muckraker.load
+    end
     describe "when setting cache to true" do
     	it "should create the cache directory" do
     		FileUtils.should_receive(:mkdir_p).with(Muckraker::CACHE_DIR)
@@ -36,9 +40,14 @@ describe Muckraker, "when loading data" do
     		YAML.should_receive(:dump).with([@expenditure]).and_return("")
     		@muckraker.load
     	end
+        it "should generate a hash with all candidates mapped to their candidate id" do
+            @muckraker.should_receive(:generate_candidate_id_map)
+            @muckraker.load
+        end
 	end
     describe "with cache set to true and existing cached data" do
     	before do
+            YAML.stub(:load).and_return([])
     		@muckraker.cache = true
 			@muckraker.load    		
     	end
@@ -52,5 +61,9 @@ describe Muckraker, "when loading data" do
     		IndependentExpenditure.should_not_receive(:candidate)
     		@muckraker.load
     	end
+        it "should generate a hash with all candidates mapped to their candidate id" do
+            @muckraker.should_receive(:generate_candidate_id_map)
+            @muckraker.load
+        end
     end
 end

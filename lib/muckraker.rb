@@ -135,7 +135,7 @@ class Muckraker
         unless party.nil?
             filtered_expenditures = restrict_to_party(filtered_expenditures, party)
         end
-        filtered_expenditures.select! { |exp| exp.support_or_oppose == support_or_oppose }
+        filtered_expenditures = filtered_expenditures.select { |exp| exp.support_or_oppose == support_or_oppose }
         candidate_names, data = sort_expenditures(filtered_expenditures) do |exp|
             candidate = @candidate_id_map[exp.candidate]
             candidate.name + " (#{candidate.party}, #{candidate.office})"
@@ -145,9 +145,11 @@ class Muckraker
             c.id
         end
         columns = { :names => ['Candidate Name', 'Amount Spent'], :types => ['string', 'number'] }
-        title = "Most Supported #{party.nil? ? '' : party + " "}Candidates: "
+        title = "Most "
+        title += " #{support_or_oppose == 'O' ? 'Opposed' : 'Supported'} "
+        title += "#{party.nil? ? '' : party + " "}Candidates: "
         data_set = DataSet.new(title, candidate_names[0...limit], data[0...limit], columns, candidate_ids[0...limit])
-        data_set.chart_type = "ColumnChart"
+        data_set.chart_type = "BarChart"
         data_set
     end
 
@@ -242,11 +244,10 @@ end
 
 # # Chart top supported and opposed candidates and top payees for each
 # data_sets = []
-# [m.top_supported_candidates('REP')].each do |data_set|
+# {'S' => m.top_supported_candidates, 'O' => m.top_opposed_candidates}.each_pair do |support_or_oppose, data_set|
 #     data_sets << data_set
 #     data_set.legend_ids.each_with_index do |candidate_id, i|
-#         data_sets << m.top_payees_for_candidate(candidate_id, 'S')
+#         data_sets << m.top_payees_for_candidate(candidate_id, support_or_oppose)
 #     end
 # end
-# data_sets.each { |d| puts d.data.inspect }
 # puts m.chart(data_sets)

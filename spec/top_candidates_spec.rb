@@ -22,6 +22,17 @@ describe Muckraker, "when calculating the most-supported candidates" do
 	it "should limit results to the specified limit" do
 		@muckraker.top_supported_candidates(nil, 20).legend.length.should == 20
 	end
+	it "should not alter the main expenditures list" do
+		@senate_candidate = FactoryGirl.build(:candidate, :name => @candidates.last.name, :party => @candidates.last.party, :office => 'senate')
+		Candidate.stub(:state_chamber).with(:DE, 'senate').and_return([@senate_candidate])
+		@super_high_expenditure = FactoryGirl.build(:expenditure, :candidate => @senate_candidate.id, :support_or_oppose => 'O', :amount => SUPER_HIGH_EXPENDITURE_VALUE)
+		@expenditures << @super_high_expenditure
+		IndependentExpenditure.stub(:candidate).with(@senate_candidate.id, 2012).and_return([@super_high_expenditure])
+		@muckraker.load
+
+		top_candidates = @muckraker.top_supported_candidates
+		@muckraker.expenditures.length.should == @expenditures.length
+	end
 end
 
 describe Muckraker, "when calculating the most-opposed candidates" do

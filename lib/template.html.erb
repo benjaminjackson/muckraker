@@ -27,12 +27,12 @@
         <% data_set.legend.length.times do |i| %>
             <% data = data_set.data[i] %>
             <% data = data.join(",") if data.kind_of?(Array) %>
-            ['<%= data_set.legend[i].gsub("\'", "\\\'") %>', <%= data %>],
+            ['<%= data_set.legend[i].downcase.titlecase.gsub("\'", "\\\'") %>', <%= data %>],
         <% end %>
         ]);
 
         // Set chart options
-        var options = {'title':'<%= data_set.title %>', 'width':<%= @chart_width || 480 %>, 'height':<%= @chart_height || 320%>};
+        var options = {'title':'<%= data_set.title %>', 'width':<%= @chart_width || 600 %>, 'height':<%= @chart_height || 400 %>};
 
         // Instantiate and draw our chart, passing in some options.
         var chart = new google.visualization.<%= data_set.chart_type %>(document.getElementById('chart_<%= index %>'));
@@ -44,7 +44,7 @@
 <body>
     <!--Div that will hold the pie chart-->
     <% @data_sets.length.times do |index| %>
-    <div id="chart_<%= index %>" style="width:<%= @chart_width || 480 %>; height:<%= @chart_height || 320 %>"></div>
+    <div id="chart_<%= index %>" style="width:<%= @chart_width || 600 %>; height:<%= @chart_height || 400 %>"></div>
     <% end %>
 </body>
 </html>

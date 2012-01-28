@@ -1,6 +1,6 @@
 require "#{File.dirname(__FILE__)}/spec_helper"
 
-include TestHelper
+include SpecHelper
 
 describe Muckraker, "when charting data with a single data set" do
 	before do

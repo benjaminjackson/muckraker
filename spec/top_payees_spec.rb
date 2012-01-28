@@ -1,6 +1,6 @@
 require "#{File.dirname(__FILE__)}/spec_helper"
 
-include TestHelper
+include SpecHelper
 
 describe Muckraker, "when calculating the top contributors" do
 	before do

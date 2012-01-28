@@ -23,7 +23,7 @@ module FactoryGirl
 	end
 end
 
-module TestHelper
+module SpecHelper
 
 	API_KEY = '160748e2412352af46f3fe7c75cce5fd:15:63511996'
 	DEFAULT_EXPENDITURE = 1000.0

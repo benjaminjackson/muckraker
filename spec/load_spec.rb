@@ -1,6 +1,6 @@
 require "#{File.dirname(__FILE__)}/spec_helper"
 
-include TestHelper
+include SpecHelper
 
 describe Muckraker, "when loading data" do
 	before do

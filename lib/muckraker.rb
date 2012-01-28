@@ -31,8 +31,8 @@ class Muckraker
 	include CampaignCash
 
     DEFAULT_LIMIT = 10
-    US_STATES = [:AL, :AK, :AZ, :AR, :CA, :CO, :CT, :DE, :FL, :GA, :HI, :ID, :IL, :IN, :IA, :KS, :KY, :LA, :ME, :MD, 
-                 :MA, :MI, :MN, :MS, :MO, :MT, :NE, :NV, :NH, :NJ, :NM, :NY, :NC, :ND, :OH, :OK, :OR, :PA, :RI, :SC, 
+    US_STATES = [:AL, :AK, :AZ, :AR, :CA, :CO, :CT, :DE, :FL, :GA, :HI, :ID, :IL, :IN, :IA, :KS, :KY, :LA, :ME, :MD,
+                 :MA, :MI, :MN, :MS, :MO, :MT, :NE, :NV, :NH, :NJ, :NM, :NY, :NC, :ND, :OH, :OK, :OR, :PA, :RI, :SC,
                  :SD, :TN, :TX, :UT, :VT, :VA, :WA, :WV, :WI, :WY]
 
     CACHE_DIR = File.expand_path "~/.muckraker/cache"
@@ -57,7 +57,7 @@ class Muckraker
     def load
         if cache && has_cached_data?
             load_from_cache
-        else 
+        else
             load_candidates
             load_expenditures
         end
@@ -143,7 +143,7 @@ class Muckraker
     end
 
     def restrict_to_party expenditures, party
-        expenditures.reject do |exp| 
+        expenditures.reject do |exp|
             candidate = @candidate_id_map[exp.candidate]
             candidate.party != party
         end
@@ -183,12 +183,12 @@ class Muckraker
         @expenditures = []
         @candidates.each do |candidate|
             load_expenditures_for_candidate(candidate.id)
-        end     
+        end
         if cache
             File.open(File.join(CACHE_DIR, EXPENDITURES_CACHE_FILENAME), 'w') do |f|
                 f.write YAML::dump(@expenditures)
             end
-        end        
+        end
     end
 
     def load_expenditures_for_candidate(candidate_id, year=2012)
@@ -216,8 +216,8 @@ class Muckraker
 
 end
 
-# Usage: 
-# 
+# Usage:
+#
 # API_KEY = '160748e2412352af46f3fe7c75cce5fd:15:63511996'
 # m = Muckraker.new(API_KEY)
 # m.cache = true

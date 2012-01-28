@@ -10,7 +10,7 @@
     // Set a callback to run when the Google Visualization API is loaded.
     google.setOnLoadCallback(drawChart);
 
-    // Callback that creates and populates a data table, 
+    // Callback that creates and populates a data table,
     // instantiates the pie chart, passes in the data and
     // draws it.
     function drawChart() {
@@ -22,7 +22,7 @@
         <% data_set.columns[:names].each_with_index do |column_name, column_index| %>
         data.addColumn('<%= data_set.columns[:types][column_index] %>', '<%= column_name.gsub("\'", "\\\'") %>');
         <% end %>
-        
+
         data.addRows([
         <% data_set.legend.length.times do |i| %>
             <% data = data_set.data[i] %>

@@ -12,13 +12,14 @@ class String
 end
 
 class DataSet
-    attr_accessor :title, :legend, :data, :columns, :chart_type
+    attr_accessor :title, :legend, :data, :columns, :legend_ids, :chart_type
 
-    def initialize title, legend, data, columns
+    def initialize title, legend, data, columns, legend_ids=nil
         @title = title
         @legend = legend
         @data = data
         @columns = columns
+        @legend_ids = legend_ids
     end
 
     def chart_type
@@ -135,9 +136,12 @@ class Muckraker
             candidate = @candidate_id_map[exp.candidate]
             candidate.name + " (#{candidate.party})"
         end
+        candidate_ids = candidate_names.map do |candidate_name|
+            @candidates.find { |c| candidate_name.include? c.name }.id
+        end
         columns = { :names => ['Candidate Name', 'Amount Spent'], :types => ['string', 'number'] }
         title = "Most Supported #{party.nil? ? '' : party + " "}Candidates: "
-        data_set = DataSet.new(title, candidate_names[0...limit], data[0...limit], columns)
+        data_set = DataSet.new(title, candidate_names[0...limit], data[0...limit], columns, candidate_ids[0...limit])
         data_set.chart_type = "ColumnChart"
         data_set
     end
@@ -198,20 +202,20 @@ class Muckraker
     end
 
     def sort_expenditures expenditures
-        payees = {}
+        results = {}
         expenditures.each do |exp|
-            payee_name = yield(exp)
-            payees[payee_name] ||= 0
-            payees[payee_name] += exp.amount
+            key = yield(exp)
+            results[key] ||= 0
+            results[key] += exp.amount
         end
-        payee_names = payees.keys.sort do |a, b|
-          payees[b] <=> payees[a]
+        keys = results.keys.sort do |a, b|
+          results[b] <=> results[a]
         end
         data = []
-        payee_names.each do |payee_name|
-            data << payees[payee_name]
+        keys.each do |key|
+            data << results[key]
         end
-        [payee_names, data]
+        [keys, data]
     end
 
 end

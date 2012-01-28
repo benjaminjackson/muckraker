@@ -18,7 +18,7 @@ describe Muckraker, "when loading data" do
 		@muckraker.candidates.should be_empty
     end
 	it "should retrieve all independent expenditures for all candidates" do
-		IndependentExpenditure.should_receive(:candidate).with('P60003654', 2012).and_return([@expenditure])
+		IndependentExpenditure.should_receive(:candidate).with(@candidate.id, 2012).and_return([@expenditure])
 		@muckraker.load
     end
     it "should generate a hash with all candidates mapped to their candidate id" do

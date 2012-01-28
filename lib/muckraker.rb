@@ -125,7 +125,7 @@ class Muckraker
 
     private
 
-    def top_candidates support_or_oppose=nil, party=nil, limit=DEFAULT_LIMIT
+    def top_candidates support_or_oppose, party=nil, limit=DEFAULT_LIMIT
         filtered_expenditures = @expenditures
         unless party.nil?
             filtered_expenditures = restrict_to_party(filtered_expenditures, party)

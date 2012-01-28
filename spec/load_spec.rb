@@ -3,9 +3,12 @@ require "#{File.dirname(__FILE__)}/spec_helper"
 include SpecHelper
 
 describe Muckraker, "when loading data" do
-	before do
-       clear_cache
-		prepare_for_load
+    before do
+        clear_cache
+        prepare_for_load
+    end
+	after do
+        clear_cache
 	end
 	it "should retrieve all candidates" do
 		Muckraker::US_STATES.each do |state|

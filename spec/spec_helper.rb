@@ -65,6 +65,33 @@ module SpecHelper
 		@muckraker.load
 	end
 
+	def load_lots_of_expenditures(support_or_oppose=nil)
+		@muckraker = Muckraker.new(API_KEY)
+		@expenditures = []
+		@candidates = []
+
+		# 100 candidates, 3 expenses per candidate
+		100.times do
+			@candidates << FactoryGirl.build(:candidate)
+		end
+
+		300.times do |i|
+			candidate = @candidates[i % 100]
+			expenditure = FactoryGirl.build(:expenditure, :candidate => candidate.id.to_s, :support_or_oppose => support_or_oppose)
+			@expenditures << expenditure
+		end
+
+		100.times do |i|
+			candidate = @candidates[i]
+			IndependentExpenditure.stub(:candidate).with(candidate.id, 2012).and_return([@expenditures[i], @expenditures[100+i], @expenditures[200+i]])
+		end
+
+		Candidate.stub(:state_chamber).and_return([])
+		# return randomly sorted array of candidates for one state
+		Candidate.stub(:state_chamber).with(:DE, 'house').and_return([@candidates].sort_by { rand })
+		@muckraker.load
+	end
+
 	def clear_cache
 		FileUtils.rm_r(Muckraker::CACHE_DIR) if File.exists?(Muckraker::CACHE_DIR)
 	end

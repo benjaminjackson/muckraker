@@ -173,9 +173,13 @@ class Muckraker
     end
 
     def load_candidates
+        puts "Loading congressional candidates..."
     	@candidates = US_STATES.map do |state|
+            puts "Loading candidates for #{state}..."
   			Candidate.state_chamber(state, 'senate') + Candidate.state_chamber(state, 'house')
 		end.flatten
+        puts "Loading presidential candidates..."
+        @candidates += President.summary
         if cache
             File.open(File.join(CACHE_DIR, CANDIDATES_CACHE_FILENAME), 'w') do |f|
                 f.write YAML::dump(@candidates)
@@ -192,7 +196,9 @@ class Muckraker
 
     def load_expenditures
         @expenditures = []
-        @candidates.each do |candidate|
+        puts "Loading expenditures"
+        @candidates.each_with_index do |candidate, index|
+            puts "Loading expenditures for candidate #{index} of #{@candidates.length}: #{candidate.name}, #{candidate.office}..."
             load_expenditures_for_candidate(candidate.id)
         end
         if cache
@@ -229,7 +235,7 @@ end
 
 # Usage:
 #
-# API_KEY = '160748e2412352af46f3fe7c75cce5fd:15:63511996'
+# API_KEY = '17986e27baac0de0b5f9f95fe3a92bf0:18:60375813'
 # m = Muckraker.new(API_KEY)
 # m.cache = true
 # m.load

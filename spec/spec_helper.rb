@@ -1,6 +1,27 @@
 require 'rspec'
 require 'muckraker'
 require 'fileutils'
+require 'factory_girl'
+require "#{File.dirname(__FILE__)}/factories"
+
+# Hack FactoryGirl to play nice with read-only attributes
+module FactoryGirl
+	class AttributeAssigner
+		def object
+			@evaluator.instance = build_class_instance
+			build_class_instance.tap do |instance|
+				attributes_to_set_on_instance.each do |attribute|
+					if instance.respond_to?("#{attribute}=")
+						instance.send("#{attribute}=", get(attribute))
+					else
+						instance.instance_variable_set("@#{attribute}", get(attribute))
+					end
+					@attribute_names_assigned << attribute
+				end
+			end
+		end
+	end
+end
 
 API_KEY = '160748e2412352af46f3fe7c75cce5fd:15:63511996'
 DEFAULT_EXPENDITURE = 1000.0
@@ -38,7 +59,7 @@ def load_expenditures
 	@top_expenditure.stub(:support_or_oppose).and_return("S")
 	@top_expenditure.stub(:amount).and_return(TOP_EXPENDITURE)
 
-	@republican = mock('republican candidate', :id => 'P60003654', :party => 'REP', :name => 'Joe Schmoe')
+	@republican = FactoryGirl.build(:candidate)
 	@democrat = mock('democratic candidate', :id => 'P60003655', :party => 'DEM', :name => 'Jack Whack')
 
 	IndependentExpenditure.stub(:candidate).with(@republican.id, 2012).and_return([@expenditure, @another_expenditure])

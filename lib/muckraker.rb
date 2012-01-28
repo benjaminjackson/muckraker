@@ -257,3 +257,11 @@ end
 #     end
 # end
 # puts m.chart(data_sets)
+
+# # Chart top payees supporting and opposing all presidential candidates
+# data_sets = []
+# m.candidates.select { |c| c.office == 'president' }.each do |c|
+#     data_sets << m.top_payees_for_candidate(c.id, 'S')
+#     data_sets << m.top_payees_for_candidate(c.id, 'O')
+# end
+# puts m.chart(data_sets)

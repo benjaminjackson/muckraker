@@ -30,10 +30,7 @@ include CampaignCash
 
 def prepare_for_load
 	@muckraker = Muckraker.new(API_KEY)
-	@expenditure = mock('expenditure')
-	@expenditure.stub(:payee).and_return("Evil Corp. International")
-	@expenditure.stub(:support_or_oppose).and_return("O")
-	@expenditure.stub(:amount).and_return(DEFAULT_EXPENDITURE)
+	@expenditure = FactoryGirl.build(:expenditure, :support_or_oppose => 'O', :amount => DEFAULT_EXPENDITURE)
 	@candidate = FactoryGirl.build(:candidate)
 	IndependentExpenditure.stub(:candidate).and_return([@expenditure])
 	Candidate.stub(:state_chamber).and_return([])

@@ -58,3 +58,5 @@ end
 def clear_cache
 	FileUtils.rm_r(Muckraker::CACHE_DIR) if File.exists?(Muckraker::CACHE_DIR)
 end
+
+clear_cache

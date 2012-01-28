@@ -218,10 +218,10 @@ end
 
 # Usage: 
 # 
-API_KEY = '160748e2412352af46f3fe7c75cce5fd:15:63511996'
-m = Muckraker.new(API_KEY)
-m.cache = true
-m.load
+# API_KEY = '160748e2412352af46f3fe7c75cce5fd:15:63511996'
+# m = Muckraker.new(API_KEY)
+# m.cache = true
+# m.load
 # Chart top payees for everyone
 # puts m.chart([m.top_payees, m.top_payees("REP"), m.top_payees("DEM"), m.top_payees("REP", "S"), m.top_payees("DEM", "O"), m.top_payees("DEM", "S"), m.top_payees("REP", "O")])
 # Chart top payees per candidate

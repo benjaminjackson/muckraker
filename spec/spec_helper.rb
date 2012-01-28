@@ -43,23 +43,12 @@ end
 def load_expenditures
 	@muckraker = Muckraker.new(API_KEY)
 
-	@expenditure = mock('expenditure')
-	@expenditure.stub(:payee).and_return("Evil Corp. International")
-	@expenditure.stub(:support_or_oppose).and_return("O")
-	@expenditure.stub(:amount).and_return(FIRST_EXPENDITURE)
+	@expenditure = FactoryGirl.build(:expenditure, :support_or_oppose => 'O', :amount => FIRST_EXPENDITURE)
+	@another_expenditure = FactoryGirl.build(:expenditure, :support_or_oppose => 'O', :amount => LOWEST_EXPENDITURE)
+	@top_expenditure = FactoryGirl.build(:expenditure, :support_or_oppose => 'S', :amount => TOP_EXPENDITURE)
 
-	@another_expenditure = mock('another expenditure')
-	@another_expenditure.stub(:payee).and_return("Shameless Astroturf, Inc.")
-	@another_expenditure.stub(:support_or_oppose).and_return("O")
-	@another_expenditure.stub(:amount).and_return(SECOND_EXPENDITURE)
-
-	@top_expenditure = mock('a really expensive expenditure')
-	@top_expenditure.stub(:payee).and_return("Newscorp, Intl.")
-	@top_expenditure.stub(:support_or_oppose).and_return("S")
-	@top_expenditure.stub(:amount).and_return(TOP_EXPENDITURE)
-
-	@republican = FactoryGirl.build(:candidate)
-	@democrat = mock('democratic candidate', :id => 'P60003655', :party => 'DEM', :name => 'Jack Whack')
+	@republican = FactoryGirl.build(:candidate, :party => 'REP', :name => 'Joe Schmoe')
+	@democrat = FactoryGirl.build(:candidate, :party => 'DEM', :name => 'Jack Whack')
 
 	IndependentExpenditure.stub(:candidate).with(@republican.id, 2012).and_return([@expenditure, @another_expenditure])
 	IndependentExpenditure.stub(:candidate).with(@democrat.id, 2012).and_return([@top_expenditure])
@@ -67,9 +56,8 @@ def load_expenditures
 	Candidate.stub(:state_chamber).and_return([])
 	Candidate.stub(:state_chamber).with(:DE, 'house').and_return([@republican, @democrat])
 
-	[@expenditure, @another_expenditure].each do |exp|
-		exp.stub(:candidate).and_return(@republican.id)
-	end
+	@another_expenditure.stub(:candidate).and_return(@republican.id)
+	@expenditure.stub(:candidate).and_return(@republican.id)
 	@top_expenditure.stub(:candidate).and_return(@democrat.id)
 
 	@muckraker.load

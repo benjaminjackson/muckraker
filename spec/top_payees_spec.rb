@@ -1,9 +1,5 @@
 require "#{File.dirname(__FILE__)}/spec_helper"
 
-FIRST_EXPENDITURE = 100000.0
-LOWEST_EXPENDITURE = 50000.0
-TOP_EXPENDITURE = 70000000.0
-
 describe Muckraker, "when calculating the top contributors" do
 	before do
 		load_expenditures

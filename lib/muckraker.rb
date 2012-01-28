@@ -62,6 +62,10 @@ class Muckraker
             load_candidates
             load_expenditures
         end
+        candidates_with_no_committees = @candidates.select { |c| c.committee_id.nil? }.map { |c| c.id }
+        @candidates.reject! { |c| c.committee_id.nil? }
+        @expenditures.reject! { |exp| candidates_with_no_committees.include? exp.candidate }
+
         generate_candidate_id_map
     end
 
@@ -112,7 +116,7 @@ class Muckraker
         columns = { :names => ['Payee', 'Amount'], :types => ['string', 'number'] }
         title = "Top Payees: "
         title += "#{support_or_oppose == 'O' ? 'Opposing' : 'Supporting'} " if support_or_oppose
-        title += candidate.name + " (#{candidate.party}) "
+        title += candidate.name + " (#{candidate.party}, #{candidate.office}) "
         DataSet.new(title, payee_names[0...limit], data[0...limit], columns)
     end
 
@@ -134,10 +138,11 @@ class Muckraker
         filtered_expenditures.select! { |exp| exp.support_or_oppose == support_or_oppose }
         candidate_names, data = sort_expenditures(filtered_expenditures) do |exp|
             candidate = @candidate_id_map[exp.candidate]
-            candidate.name + " (#{candidate.party})"
+            candidate.name + " (#{candidate.party}, #{candidate.office})"
         end
         candidate_ids = candidate_names.map do |candidate_name|
-            @candidates.find { |c| candidate_name.include? c.name }.id
+            c = @candidates.find { |c| candidate_name.include?(c.name) && candidate_name.include?(c.office) }
+            c.id
         end
         columns = { :names => ['Candidate Name', 'Amount Spent'], :types => ['string', 'number'] }
         title = "Most Supported #{party.nil? ? '' : party + " "}Candidates: "
@@ -226,10 +231,22 @@ end
 # m = Muckraker.new(API_KEY)
 # m.cache = true
 # m.load
-# Chart top payees for everyone
+
+# # Chart top payees for everyone
 # puts m.chart([m.top_payees, m.top_payees("REP"), m.top_payees("DEM"), m.top_payees("REP", "S"), m.top_payees("DEM", "O"), m.top_payees("DEM", "S"), m.top_payees("REP", "O")])
-# Chart top payees per candidate
+
+# # Chart top payees per candidate
 # payees = m.candidates.map { |candidate| m.top_payees_for_candidate(candidate.id) }
 # payees.reject! { |data_set| data_set.data.empty? }
 # puts m.chart(payees)
-# puts m.chart([m.top_supported_candidates, m.top_supported_candidates('REP'), m.top_supported_candidates('DEM')])
+
+# # Chart top supported and opposed candidates and top payees for each
+# data_sets = []
+# [m.top_supported_candidates('REP')].each do |data_set|
+#     data_sets << data_set
+#     data_set.legend_ids.each_with_index do |candidate_id, i|
+#         data_sets << m.top_payees_for_candidate(candidate_id, 'S')
+#     end
+# end
+# data_sets.each { |d| puts d.data.inspect }
+# puts m.chart(data_sets)

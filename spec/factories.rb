@@ -9,6 +9,8 @@ FactoryGirl.define do
         sequence(:id, "600000")
         sequence(:name) { |n| "Candidate #{n}" }
         sequence(:party) { |n| n % 2 ? 'REP' : 'DEM' }
+        sequence(:committee_id, "C400000")
+        office "house"
     end
     factory :expenditure, :class => CampaignCash::IndependentExpenditure do
         sequence(:id, "10000")

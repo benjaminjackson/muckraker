@@ -30,6 +30,7 @@ module SpecHelper
 	FIRST_EXPENDITURE = 100000.0
 	LOWEST_EXPENDITURE = 50000.0
 	TOP_EXPENDITURE = 70000000.0
+	SUPER_HIGH_EXPENDITURE_VALUE = 1000000000000.0
 
 	include CampaignCash
 
@@ -65,7 +66,7 @@ module SpecHelper
 		@muckraker.load
 	end
 
-	def load_lots_of_expenditures(support_or_oppose=nil)
+	def prepare_lots_of_expenditures(support_or_oppose=nil)
 		@muckraker = Muckraker.new(API_KEY)
 		@expenditures = []
 		@candidates = []
@@ -88,8 +89,7 @@ module SpecHelper
 
 		Candidate.stub(:state_chamber).and_return([])
 		# return randomly sorted array of candidates for one state
-		Candidate.stub(:state_chamber).with(:DE, 'house').and_return([@candidates].sort_by { rand })
-		@muckraker.load
+		Candidate.stub(:state_chamber).with(:DE, 'house').and_return(@candidates.sort_by { rand })
 	end
 
 	def clear_cache

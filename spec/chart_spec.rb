@@ -1,5 +1,7 @@
 require "#{File.dirname(__FILE__)}/spec_helper"
 
+include TestHelper
+
 describe Muckraker, "when charting data with a single data set" do
 	before do
 		load_expenditures

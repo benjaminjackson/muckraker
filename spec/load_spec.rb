@@ -1,5 +1,7 @@
 require "#{File.dirname(__FILE__)}/spec_helper"
 
+include TestHelper
+
 describe Muckraker, "when loading data" do
 	before do
        clear_cache
@@ -50,7 +52,7 @@ describe Muckraker, "when loading data" do
     	before do
             YAML.stub(:load).and_return([])
     		@muckraker.cache = true
-			@muckraker.load    		
+			@muckraker.load
     	end
     	it "should read the data from cache" do
     		YAML.should_receive(:load).at_least(2).times

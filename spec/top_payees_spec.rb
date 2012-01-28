@@ -20,13 +20,13 @@ describe Muckraker, "when calculating the top contributors" do
 
 	describe "for democrats" do
 		it "should return all payees for or against democrats in order of who contributed the most" do
-			@muckraker.top_payees('DEM').legend.should == [@top_expenditure.payee.normalize]
+			@muckraker.top_payees('D').legend.should == [@top_expenditure.payee.normalize]
 		end
 	end
 
 	describe "for republicans" do
 		it "should return all payees for or against republicans in order of who contributed the most" do
-			@muckraker.top_payees('REP').legend.should == [@expenditure.payee.normalize, @another_expenditure.payee.normalize]
+			@muckraker.top_payees('R').legend.should == [@expenditure.payee.normalize, @another_expenditure.payee.normalize]
 		end
 		describe "with a limit" do
 			it "should only return a limited number of results" do

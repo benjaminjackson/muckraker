@@ -77,7 +77,7 @@ class Muckraker
 
     def top_payees party=nil, support_or_oppose=nil, limit=DEFAULT_LIMIT
 
-        # party is one of 'REP' or 'DEM'
+        # party is one of 'R' or 'D'
         # support_or_oppose is one of 'O' or 'S'
 
         filtered_expenditures = @expenditures
@@ -94,7 +94,7 @@ class Muckraker
         columns = { :names => ['Payee', 'Amount'], :types => ['string', 'number'] }
         title = "Top Payees"
         title += " #{support_or_oppose == 'O' ? 'Opposing' : 'Supporting'}" if support_or_oppose
-        title += " #{party == 'REP' ? 'Republicans' : 'Democrats'}" if party
+        title += " #{party == 'R' ? 'Republicans' : 'Democrats'}" if party
         DataSet.new(title, payee_names[0...limit], data[0...limit], columns)
     end
 
@@ -173,12 +173,12 @@ class Muckraker
     end
 
     def load_candidates
-        puts "Loading congressional candidates..."
+        # puts "Loading congressional candidates..."
     	@candidates = US_STATES.map do |state|
-            puts "Loading candidates for #{state}..."
+            # puts "Loading candidates for #{state}..."
   			Candidate.state_chamber(state, 'senate') + Candidate.state_chamber(state, 'house')
 		end.flatten
-        puts "Loading presidential candidates..."
+        # puts "Loading presidential candidates..."
         @candidates += President.summary
         if cache
             File.open(File.join(CACHE_DIR, CANDIDATES_CACHE_FILENAME), 'w') do |f|
@@ -196,9 +196,9 @@ class Muckraker
 
     def load_expenditures
         @expenditures = []
-        puts "Loading expenditures"
+        # puts "Loading expenditures"
         @candidates.each_with_index do |candidate, index|
-            puts "Loading expenditures for candidate #{index} of #{@candidates.length}: #{candidate.name}, #{candidate.office}..."
+            # puts "Loading expenditures for candidate #{index} of #{@candidates.length}: #{candidate.name}, #{candidate.office}..."
             load_expenditures_for_candidate(candidate.id)
         end
         if cache
@@ -241,7 +241,7 @@ end
 # m.load
 
 # # Chart top payees for everyone
-# puts m.chart([m.top_payees, m.top_payees("REP"), m.top_payees("DEM"), m.top_payees("REP", "S"), m.top_payees("DEM", "O"), m.top_payees("DEM", "S"), m.top_payees("REP", "O")])
+# puts m.chart([m.top_payees, m.top_payees("R"), m.top_payees("D"), m.top_payees("R", "S"), m.top_payees("D", "O"), m.top_payees("D", "S"), m.top_payees("R", "O")])
 
 # # Chart top payees per candidate
 # payees = m.candidates.map { |candidate| m.top_payees_for_candidate(candidate.id) }

@@ -25,7 +25,7 @@ end
 
 module SpecHelper
 
-	API_KEY = '160748e2412352af46f3fe7c75cce5fd:15:63511996'
+	API_KEY = '17986e27baac0de0b5f9f95fe3a92bf0:18:60375813'
 	DEFAULT_EXPENDITURE = 1000.0
 	FIRST_EXPENDITURE = 100000.0
 	LOWEST_EXPENDITURE = 50000.0
@@ -41,6 +41,7 @@ module SpecHelper
 		IndependentExpenditure.stub(:candidate).and_return([@expenditure])
 		Candidate.stub(:state_chamber).and_return([])
 		Candidate.stub(:state_chamber).with(:DE, 'house').and_return([@candidate])
+		President.stub(:summary).and_return([])
 	end
 
 	def load_expenditures
@@ -50,8 +51,8 @@ module SpecHelper
 		@another_expenditure = FactoryGirl.build(:expenditure, :support_or_oppose => 'O', :amount => LOWEST_EXPENDITURE)
 		@top_expenditure = FactoryGirl.build(:expenditure, :support_or_oppose => 'S', :amount => TOP_EXPENDITURE)
 
-		@republican = FactoryGirl.build(:candidate, :party => 'REP', :name => 'Joe Schmoe')
-		@democrat = FactoryGirl.build(:candidate, :party => 'DEM', :name => 'Jack Whack')
+		@republican = FactoryGirl.build(:candidate, :party => 'R', :name => 'Joe Schmoe')
+		@democrat = FactoryGirl.build(:candidate, :party => 'D', :name => 'Jack Whack')
 
 		IndependentExpenditure.stub(:candidate).with(@republican.id, 2012).and_return([@expenditure, @another_expenditure])
 		IndependentExpenditure.stub(:candidate).with(@democrat.id, 2012).and_return([@top_expenditure])
@@ -62,6 +63,8 @@ module SpecHelper
 		@another_expenditure.stub(:candidate).and_return(@republican.id)
 		@expenditure.stub(:candidate).and_return(@republican.id)
 		@top_expenditure.stub(:candidate).and_return(@democrat.id)
+
+		President.stub(:summary).and_return([])
 
 		@muckraker.load
 	end
@@ -90,6 +93,7 @@ module SpecHelper
 		Candidate.stub(:state_chamber).and_return([])
 		# return randomly sorted array of candidates for one state
 		Candidate.stub(:state_chamber).with(:DE, 'house').and_return(@candidates.sort_by { rand })
+		President.stub(:summary).and_return([])
 	end
 
 	def clear_cache

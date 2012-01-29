@@ -235,7 +235,8 @@ class Muckraker
         expenditures.each do |exp|
             key = yield(exp)
             results[key] ||= 0
-            results[key] += exp.amount
+            # Data from API must be multiplied by 10, not sure why
+            results[key] += exp.amount * 10 
         end
         keys = results.keys.sort do |a, b|
           results[b] <=> results[a]

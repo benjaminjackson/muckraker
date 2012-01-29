@@ -82,6 +82,7 @@ class Muckraker
     end
 
     def chart data_sets
+        data_sets = [data_sets] unless data_sets.is_an?(Array)
         @data_sets = data_sets
         template = File.open(File.join(File.dirname(__FILE__), TEMPLATE_FILENAME)).read
         return ERB.new(template).result(binding)
@@ -109,7 +110,7 @@ class Muckraker
 
     end
 
-    def top_states party=nil, support_or_oppose=nil, limit=DEFAULT_LIMIT
+    def top_states party=nil, support_or_oppose=nil, limit=US_STATES.length
         data_set = top_values "Top States", party, support_or_oppose, limit do |exp|
             exp.state
         end
@@ -288,42 +289,3 @@ class Muckraker
     end
 
 end
-
-# Usage:
-#
-# API_KEY = '17986e27baac0de0b5f9f95fe3a92bf0:18:60375813'
-# m = Muckraker.new(API_KEY)
-# m.cache = true
-# m.load
-
-# # Chart top payees for everyone
-# puts m.chart([m.top_payees, m.top_payees("R"), m.top_payees("D"), m.top_payees("R", "S"), m.top_payees("D", "O"), m.top_payees("D", "S"), m.top_payees("R", "O")])
-
-# # Chart top payees per candidate
-# payees = m.candidates.map { |candidate| m.top_payees_for_candidate(candidate.id) }
-# payees.reject! { |data_set| data_set.data.empty? }
-# puts m.chart(payees)
-
-# # Chart top supported and opposed candidates and top payees for each
-# data_sets = []
-# {'S' => m.top_supported_candidates, 'O' => m.top_opposed_candidates}.each_pair do |support_or_oppose, data_set|
-#     data_sets << data_set
-#     data_set.legend_ids.each_with_index do |candidate_id, i|
-#         data_sets << m.top_payees_for_candidate(candidate_id, support_or_oppose)
-#     end
-# end
-# puts m.chart(data_sets)
-
-# # Chart top payees supporting and opposing all presidential candidates
-# data_sets = []
-# m.candidates.select { |c| c.office == 'president' }.each do |c|
-#     data_sets << m.top_committees_for_candidate(c.id, 'S')
-#     data_sets << m.top_committees_for_candidate(c.id, 'O')
-# end
-# puts m.chart(data_sets)
-
-# Chart top states
-# data_sets = [m.top_states('R', 'S', 50), m.top_committees('R', 'S'), m.top_payees('R', 'S'),
-#              m.top_states('D', 'O', 50), m.top_committees('D', 'O'), m.top_payees('D', 'O'),
-#              m.top_supported_candidates('R'), m.top_opposed_candidates('D')]
-# puts m.chart(data_sets)

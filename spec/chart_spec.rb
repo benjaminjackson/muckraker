@@ -14,9 +14,9 @@ describe Muckraker, "when charting data with a single data set" do
 		chart.should match(@expenditure.payee.normalize)
 		chart.should match(@another_expenditure.payee.normalize)
 		chart.should match(@top_expenditure.payee.normalize)
-		chart.should match((@expenditure.amount * 10).to_s)
-		chart.should match((@another_expenditure.amount * 10).to_s)
-		chart.should match((@top_expenditure.amount * 10).to_s)
+		chart.should match((@expenditure.amount * 10).round.to_s)
+		chart.should match((@another_expenditure.amount * 10).round.to_s)
+		chart.should match((@top_expenditure.amount * 10).round.to_s)
 	end
 	it "should render the ERB template with the data set's title" do
 		chart = @muckraker.chart([@muckraker.top_payees])

@@ -236,7 +236,7 @@ class Muckraker
             key = yield(exp)
             results[key] ||= 0
             # Data from API must be multiplied by 10, not sure why
-            results[key] += exp.amount * 10 
+            results[key] += (exp.amount * 10).round
         end
         keys = results.keys.sort do |a, b|
           results[b] <=> results[a]

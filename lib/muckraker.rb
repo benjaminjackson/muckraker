@@ -6,6 +6,7 @@ require 'titlecase'
 require 'erb'
 
 class String
+    # normalize against differences in names (e.g. , LLC vs. just LLC)
     def normalize
         downcase.titlecase.gsub(/[,]/i, '')
     end
@@ -75,11 +76,16 @@ class Muckraker
         return ERB.new(template).result(binding)
     end
 
+    # party is one of 'R' or 'D'
+    # support_or_oppose is one of 'O' or 'S'
+
     def top_payees party=nil, support_or_oppose=nil, limit=DEFAULT_LIMIT
+        top_values "Top Payees", party, support_or_oppose, limit do |exp|
+            exp.payee.normalize
+        end
+    end
 
-        # party is one of 'R' or 'D'
-        # support_or_oppose is one of 'O' or 'S'
-
+    def top_values title, party=nil, support_or_oppose=nil, limit=DEFAULT_LIMIT
         filtered_expenditures = @expenditures
         unless support_or_oppose.nil?
             filtered_expenditures = filtered_expenditures.reject { |exp| exp.support_or_oppose != support_or_oppose }
@@ -89,10 +95,9 @@ class Muckraker
         end
 
         payee_names, data = sort_expenditures(filtered_expenditures) do |exp|
-            exp.payee.normalize # normalize against differences in names (e.g. , LLC vs. just LLC)
+            yield(exp)
         end
         columns = { :names => ['Payee', 'Amount'], :types => ['string', 'number'] }
-        title = "Top Payees"
         title += " #{support_or_oppose == 'O' ? 'Opposing' : 'Supporting'}" if support_or_oppose
         title += " #{party == 'R' ? 'Republicans' : 'Democrats'}" if party
         DataSet.new(title, payee_names[0...limit], data[0...limit], columns)

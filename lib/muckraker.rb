@@ -99,6 +99,18 @@ class Muckraker
     end
 
     def top_payees_for_candidate candidate_id, support_or_oppose=nil, limit=DEFAULT_LIMIT
+        top_values_for_candidate "Top Payees ", candidate_id, support_or_oppose, limit do |exp|
+            exp.payee.normalize
+        end
+    end
+
+    def top_committees_for_candidate candidate_id, support_or_oppose=nil, limit=DEFAULT_LIMIT
+        top_values_for_candidate "Top Committees ", candidate_id, support_or_oppose, limit do |exp|
+            exp.committee_name.normalize
+        end
+    end
+
+    def top_values_for_candidate title, candidate_id, support_or_oppose=nil, limit=DEFAULT_LIMIT
         candidate = @candidate_id_map[candidate_id]
         filtered_expenditures = []
         @expenditures.each do |exp|
@@ -111,10 +123,9 @@ class Muckraker
         end
 
         payee_names, data = sort_expenditures(filtered_expenditures) do |exp|
-            exp.payee.normalize # normalize against differences in names (e.g. , LLC vs. just LLC)
+            yield(exp)
         end
         columns = { :names => ['Payee', 'Amount'], :types => ['string', 'number'] }
-        title = "Top Payees: "
         title += "#{support_or_oppose == 'O' ? 'Opposing' : 'Supporting'} " if support_or_oppose
         title += candidate.name + " (#{candidate.party}, #{candidate.office}) "
         DataSet.new(title, payee_names[0...limit], data[0...limit], columns)
@@ -261,7 +272,7 @@ end
 # # Chart top payees supporting and opposing all presidential candidates
 # data_sets = []
 # m.candidates.select { |c| c.office == 'president' }.each do |c|
-#     data_sets << m.top_payees_for_candidate(c.id, 'S')
-#     data_sets << m.top_payees_for_candidate(c.id, 'O')
+#     data_sets << m.top_committees_for_candidate(c.id, 'S')
+#     data_sets << m.top_committees_for_candidate(c.id, 'O')
 # end
 # puts m.chart(data_sets)

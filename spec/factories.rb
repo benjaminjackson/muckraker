@@ -1,4 +1,5 @@
 PAYEE_NAMES = ['Evil Corp. International', 'Shameless Astroturf, Inc.', 'News Corporation']
+COMMITTEE_NAMES = ['Elect Barack Obama', 'Campaign to Defeat Mitt Romney', 'Super PAC']
 
 FactoryGirl.define do
     sequence :amount do |n|
@@ -12,8 +13,11 @@ FactoryGirl.define do
         sequence(:committee_id, "C400000")
         office "house"
     end
+
     factory :expenditure, :class => CampaignCash::IndependentExpenditure do
         sequence(:id, "10000")
+        sequence(:committee_name) { |n| COMMITTEE_NAMES[n % 3] }
+        sequence(:committee_id, "C10000")
         sequence(:amount) { |n| 100.0 * n }
         support_or_oppose 'S'
         sequence(:payee) { |n| PAYEE_NAMES[n % 3] }

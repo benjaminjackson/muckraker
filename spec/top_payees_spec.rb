@@ -2,7 +2,7 @@ require "#{File.dirname(__FILE__)}/spec_helper"
 
 include SpecHelper
 
-describe Muckraker, "when calculating the top contributors" do
+describe Muckraker, "when calculating the top payees" do
 	before do
 		load_expenditures
 	end
@@ -36,7 +36,7 @@ describe Muckraker, "when calculating the top contributors" do
 	end
 end
 
-describe Muckraker, "when calculating the top contributors for a candidate" do
+describe Muckraker, "when calculating the top payees for a candidate" do
 	before do
 		load_expenditures
 	end

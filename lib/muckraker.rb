@@ -82,7 +82,7 @@ class Muckraker
     end
 
     def chart data_sets
-        data_sets = [data_sets] unless data_sets.is_an?(Array)
+        data_sets = [data_sets] unless data_sets.is_a?(Array)
         @data_sets = data_sets
         template = File.open(File.join(File.dirname(__FILE__), TEMPLATE_FILENAME)).read
         return ERB.new(template).result(binding)

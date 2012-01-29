@@ -5,10 +5,21 @@ require 'fileutils'
 require 'titlecase'
 require 'erb'
 
+class Float
+    alias_method :round_orig, :round
+    def round(n=0)
+        (self * (10.0 ** n)).round_orig * (10.0 ** (-n))
+    end
+end
+
 class String
     # normalize against differences in names (e.g. , LLC vs. just LLC)
     def normalize
         downcase.titlecase.gsub(/[,]/i, '')
+    end
+    # unused for now as it messes up Google charts and there's no option for currency
+    def to_currency
+        reverse.scan(/(?:\d*\.)?\d{1,3}-?/).join(',').reverse
     end
 end
 
@@ -80,9 +91,37 @@ class Muckraker
     # support_or_oppose is one of 'O' or 'S'
 
     def top_payees party=nil, support_or_oppose=nil, limit=DEFAULT_LIMIT
-        top_values "Top Payees", party, support_or_oppose, limit do |exp|
+        data_set = top_values "Top Payees", party, support_or_oppose, limit do |exp|
             exp.payee.normalize
         end
+        data_set.legend = data_set.legend.map { |payee| payee.titlecase }
+        data_set.chart_type = "BarChart"
+        data_set
+    end
+
+    def top_committees party=nil, support_or_oppose=nil, limit=DEFAULT_LIMIT
+        data_set = top_values "Top Committees", party, support_or_oppose, limit do |exp|
+            exp.committee_name.normalize
+        end
+        data_set.legend = data_set.legend.map { |committee_name| committee_name.titlecase }
+        data_set.chart_type = "BarChart"
+        data_set
+
+    end
+
+    def top_states party=nil, support_or_oppose=nil, limit=DEFAULT_LIMIT
+        data_set = top_values "Top States", party, support_or_oppose, limit do |exp|
+            exp.state
+        end
+        # strip expenses with no state declared
+        if data_set.legend.first.empty?
+            data_set.legend.shift
+            data_set.data.shift
+        end
+        data_set.legend = data_set.legend.map { |state| "US-#{state.upcase}" }
+        data_set.chart_type = "GeoMap"
+        data_set
+
     end
 
     def top_values title, party=nil, support_or_oppose=nil, limit=DEFAULT_LIMIT
@@ -236,14 +275,14 @@ class Muckraker
             key = yield(exp)
             results[key] ||= 0
             # Data from API must be multiplied by 10, not sure why
-            results[key] += (exp.amount * 10).round
+            results[key] += exp.amount
         end
         keys = results.keys.sort do |a, b|
           results[b] <=> results[a]
         end
         data = []
         keys.each do |key|
-            data << results[key]
+            data << (results[key] * 10).floor
         end
         [keys, data]
     end
@@ -281,4 +320,10 @@ end
 #     data_sets << m.top_committees_for_candidate(c.id, 'S')
 #     data_sets << m.top_committees_for_candidate(c.id, 'O')
 # end
+# puts m.chart(data_sets)
+
+# Chart top states
+# data_sets = [m.top_states('R', 'S', 50), m.top_committees('R', 'S'), m.top_payees('R', 'S'),
+#              m.top_states('D', 'O', 50), m.top_committees('D', 'O'), m.top_payees('D', 'O'),
+#              m.top_supported_candidates('R'), m.top_opposed_candidates('D')]
 # puts m.chart(data_sets)

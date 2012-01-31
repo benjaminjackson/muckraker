@@ -35,7 +35,7 @@ class DataSet
     end
 
     def chart_type
-        @chart_type || "PieChart"
+        @chart_type || "BarChart"
     end
 end
 

@@ -1,6 +1,6 @@
 source "http://rubygems.org"
 
-gem "campaign_cash", ">= 2.0.7", :git => "git@github.com:benjaminjackson/campaign_cash.git"
+gem "campaign_cash", ">= 2.0.8"
 gem "titlecase", ">= 0.1.1"
 
 group :development do

@@ -2,9 +2,14 @@
 
 Simple ruby wrapper around the NYTimes/campaign_cash library, which is itself a simple ruby wrapper around the [New York Times Campaign Finance API](http://developer.nytimes.com/docs/read/campaign_finance_api).
 
-## INSTALLATION:
+## INSTALL:
 
-    gem install muckraker
+Still need to make this into a proper rubygem. Until then if you'd like to play with it, then you can:
+
+1. Fork it (optional but recommended)
+2. Clone it
+3. Open `irb` in the root folder, and 
+4. `require './muckraker'`
 
 ## USAGE:
 

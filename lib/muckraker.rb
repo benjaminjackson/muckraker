@@ -235,7 +235,7 @@ class Muckraker
   			Candidate.state_chamber(state, 'senate') + Candidate.state_chamber(state, 'house')
 		end.flatten
         # puts "Loading presidential candidates..."
-        @candidates += President.summary
+        # @candidates += President.summary
         if cache
             File.open(File.join(CACHE_DIR, CANDIDATES_CACHE_FILENAME), 'w') do |f|
                 f.write YAML::dump(@candidates)

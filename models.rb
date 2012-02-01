@@ -8,22 +8,23 @@ class Campaign
 	has n, :independent_expenditures
 
 	property :id, Serial
+	property :remote_id, String
 	property :name, String
 	property :district, Integer
 	property :party, String
 	property :office, String
 	property :state, String
 	property :status, String
-	property :total_receipts, Decimal
-	property :total_contributions, Decimal
-	property :total_from_individuals, Decimal
-	property :total_from_pacs, Decimal
-	property :candidate_loans, Decimal
-	property :total_disbursements, Decimal
-	property :total_refunds, Decimal
-	property :debts_owed, Decimal
-	property :begin_cash, Decimal
-	property :end_cash, Decimal
+	property :total_receipts, Float
+	property :total_contributions, Float
+	property :total_from_individuals, Float
+	property :total_from_pacs, Float
+	property :candidate_loans, Float
+	property :total_disbursements, Float
+	property :total_refunds, Float
+	property :debts_owed, Float
+	property :begin_cash, Float
+	property :end_cash, Float
 	property :created_at, DateTime
 	property :updated_at, DateTime
 end
@@ -31,11 +32,11 @@ end
 class IndependentExpenditure
 	include DataMapper::Resource
 
-	belongs_to :committee
+	# belongs_to :committee
 	belongs_to :campaign
 
 	property :id, Serial
-	property :amount, Decimal
+	property :amount, Float
 	property :payee, String
 	property :support_or_oppose, String
 	property :purpose, String
@@ -49,9 +50,10 @@ class Committee
 	include DataMapper::Resource
 
 	belongs_to :campaign
-	has n, :independent_expenditures
+	# has n, :independent_expenditures
 
 	property :id, Serial
+	property :remote_id, String
 	property :name, String
 	property :state, String
 	property :district, Integer
@@ -62,14 +64,14 @@ class Committee
 	property :interest_group, String
 	property :committee_type, String
 	property :designation, String
-	property :total_receipts, Decimal
-	property :total_receipts, Decimal
-	property :total_contributions, Decimal
-	property :total_from_individuals, Decimal
-	property :total_from_pacs, Decimal
-	property :candidate_loans, Decimal
-	property :total_disbursements, Decimal
-	property :debts_owed, Decimal
-	property :begin_cash, Decimal
-	property :end_cash, Decimal
+	property :total_receipts, Float
+	property :total_receipts, Float
+	property :total_contributions, Float
+	property :total_from_individuals, Float
+	property :total_from_pacs, Float
+	property :candidate_loans, Float
+	property :total_disbursements, Float
+	property :debts_owed, Float
+	property :begin_cash, Float
+	property :end_cash, Float
 end

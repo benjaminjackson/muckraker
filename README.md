@@ -1,4 +1,4 @@
-## DESCRIPTION: 
+## DESCRIPTION:
 
 Simple ruby wrapper around the NYTimes/campaign_cash library, which is itself a simple ruby wrapper around the [New York Times Campaign Finance API](http://developer.nytimes.com/docs/read/campaign_finance_api).
 
@@ -8,7 +8,7 @@ Still need to make this into a proper rubygem. Until then if you'd like to play 
 
 1. Fork it (optional but recommended)
 2. Clone it
-3. Open `irb` in the root folder, and 
+3. Open `irb` in the root folder, and
 4. `require './muckraker'`
 
 ## USAGE:
@@ -16,25 +16,25 @@ Still need to make this into a proper rubygem. Until then if you'd like to play 
 ### Initializing
 
     m = Muckraker.new("API_KEY")
-    m.cache = true 
+    m.cache = true
     m.load
-    
+
 Please make sure to set `cache` to `true` for now. Caching will be enabled by default shortly to avoid hitting rate limits when loading all expenditures.
-    
+
 ### Top Payees
-    
+
     # List of top payees for both parties, supporting and opposing
     m.top_payees.legend
 
     # Data for the same
     m.top_payees.data
-    
+
     # Top payees both supporting and opposing Republican candidates
-    m.top_payees("R") 
+    m.top_payees('REP')
 
     # Top payees supporting Democratic candidates
-    m.top_payees("D", "S"), 
-    
+    m.top_payees("DEM", "S"),
+
     # Top payees supporting/opposing each candidate
     supporting_payees = m.candidates.map { |candidate| m.top_payees_for_candidate(candidate.id, "S") }
     supporting_payees = m.candidates.map { |candidate| m.top_payees_for_candidate(candidate.id, "O") }
@@ -43,17 +43,17 @@ Please make sure to set `cache` to `true` for now. Caching will be enabled by de
 ### Charts
 
     # Chart the top payees supporting Democratic candidates as a pie chart
-    m.chart(m.top_payees("D", "S"))
-    
+    m.chart(m.top_payees("DEM", "S"))
+
 ### Chart Types
 
     # Chart the above as a bar chart
-    data_set = m.top_payees("D", "S")
+    data_set = m.top_payees("DEM", "S")
     data_set.chart_type = "BarChart"
     m.chart(data_set)
-    
+
 ### Chaining Calls Together for Fun & Profit
-    
+
     # Chart top supported and opposed candidates and top payees for each
     data_sets = []
     {'S' => m.top_supported_candidates, 'O' => m.top_opposed_candidates}.each_pair do |support_or_oppose, data_set|
@@ -77,5 +77,5 @@ Please make sure to set `cache` to `true` for now. Caching will be enabled by de
 ### States
 
     # Chart top states with spending for republican candidates and opposing democratic candidates
-    data_sets = [m.top_states('R', 'S'), m.top_states('D', 'O')]
+    data_sets = [m.top_states('REP', 'S'), m.top_states('DEM', 'O')]
     m.chart(data_sets)

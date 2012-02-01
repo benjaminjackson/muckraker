@@ -10,7 +10,7 @@ describe Muckraker, "when calculating the top committees" do
 	describe "for both parties" do
 		it "should return all committees in order of who contributed the most" do
 			@muckraker.top_committees.legend.should == [@top_expenditure.committee_name.normalize,
-			                                            @expenditure.committee_name.normalize, 
+			                                            @expenditure.committee_name.normalize,
 			                                            @another_expenditure.committee_name.normalize]
 		end
 		describe "with a limit" do
@@ -19,16 +19,16 @@ describe Muckraker, "when calculating the top committees" do
 			end
 		end
 	end
-	
+
 	describe "for democrats" do
 		it "should return all committees for or against democrats in order of who contributed the most" do
-			@muckraker.top_committees('D').legend.should == [@top_expenditure.committee_name.normalize]
+			@muckraker.top_committees('DEM').legend.should == [@top_expenditure.committee_name.normalize]
 		end
 	end
 
 	describe "for republicans" do
 		it "should return all committees for or against republicans in order of who contributed the most" do
-			@muckraker.top_committees('R').legend.should == [@expenditure.committee_name.normalize, @another_expenditure.committee_name.normalize]
+			@muckraker.top_committees('REP').legend.should == [@expenditure.committee_name.normalize, @another_expenditure.committee_name.normalize]
 		end
 		describe "with a limit" do
 			it "should only return a limited number of results" do
@@ -36,7 +36,7 @@ describe Muckraker, "when calculating the top committees" do
 			end
 		end
 	end
-	
+
 end
 
 describe Muckraker, "when calculating the top committees for a candidate" do

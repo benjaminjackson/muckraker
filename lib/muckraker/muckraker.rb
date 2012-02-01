@@ -65,7 +65,7 @@ class Muckraker
         return ERB.new(template).result(binding)
     end
 
-    # party is one of 'R' or 'D'
+    # party is one of 'REP' or 'DEM'
     # support_or_oppose is one of 'O' or 'S'
 
     def top_payees party=nil, support_or_oppose=nil, limit=DEFAULT_LIMIT
@@ -116,7 +116,7 @@ class Muckraker
         end
         columns = { :names => ['Payee', 'Amount'], :types => ['string', 'number'] }
         title += " #{support_or_oppose == 'O' ? 'Opposing' : 'Supporting'}" if support_or_oppose
-        title += " #{party == 'R' ? 'Republicans' : 'Democrats'}" if party
+        title += " #{party == 'REP' ? 'Republicans' : 'Democrats'}" if party
         DataSet.new(title, payee_names[0...limit], data[0...limit], columns)
     end
 

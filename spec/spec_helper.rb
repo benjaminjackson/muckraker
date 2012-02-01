@@ -51,8 +51,8 @@ module SpecHelper
 		@another_expenditure = FactoryGirl.build(:expenditure, :support_or_oppose => 'O', :amount => LOWEST_EXPENDITURE)
 		@top_expenditure = FactoryGirl.build(:expenditure, :support_or_oppose => 'S', :amount => TOP_EXPENDITURE)
 
-		@republican = FactoryGirl.build(:candidate, :party => 'R', :name => 'Joe Schmoe')
-		@democrat = FactoryGirl.build(:candidate, :party => 'D', :name => 'Jack Whack')
+		@republican = FactoryGirl.build(:candidate, :party => 'REP', :name => 'Joe Schmoe')
+		@democrat = FactoryGirl.build(:candidate, :party => 'DEM', :name => 'Jack Whack')
 
 		IndependentExpenditure.stub(:candidate).with(@republican.id, 2012).and_return([@expenditure, @another_expenditure])
 		IndependentExpenditure.stub(:candidate).with(@democrat.id, 2012).and_return([@top_expenditure])

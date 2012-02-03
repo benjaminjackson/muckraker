@@ -1,3 +1,20 @@
 <h2>Welcome to Muckraker</h2>
 <p>Choose a chart from the list below to get started</p>
 
+
+<% {"Supported" => @most_supported_campaigns, "Opposed" => @most_opposed_campaigns }.each_pair do |support_or_oppose, campaigns| %>
+<h2>Most <%= support_or_oppose %> Candidates</h2>
+<table>
+	<tr>
+		<th>Name</th>
+		<th>Amount</th>
+	</tr>
+	<% campaigns.each do |campaign| %>
+	<tr>
+		<td><%= campaign.name %></td>
+		<% support_or_oppose_value = support_or_oppose == "Supported" ? "S" : "O" %>
+		<td>$<%= campaign.total_expenditures(:support_or_oppose => support_or_oppose_value).to_s.to_currency %></td>
+	</tr>
+	<% end %>
+</table>
+<% end %>

@@ -51,7 +51,7 @@ class Muckraker::Bootstrap
 end
 
 
-DataMapper.setup(:default, ENV['DATABASE_URL'] || "sqlite://#{Dir.pwd}/muckraker.db")
+DataMapper.setup(:default, ENV['DATABASE_URL'] || "sqlite://#{Dir.pwd}/muckraker_new.db")
 
 DataMapper.finalize
 DataMapper.auto_upgrade!

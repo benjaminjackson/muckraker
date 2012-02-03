@@ -13,5 +13,5 @@ get '/' do
 end
 
 get '/*' do
-  html :'404'
+  File.read(File.join('public', '404.html'))
 end

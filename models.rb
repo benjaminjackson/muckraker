@@ -9,7 +9,7 @@ class Campaign
 
 	property :id, Serial
 	property :remote_id, String
-	property :name, String
+	property :name, Text
 	property :district, Integer
 	property :party, String
 	property :office, String
@@ -37,9 +37,9 @@ class IndependentExpenditure
 
 	property :id, Serial
 	property :amount, Float
-	property :payee, String
+	property :payee, Text
 	property :support_or_oppose, String
-	property :purpose, String
+	property :purpose, Text
 	property :transaction_id, String
 	property :date_received, Date
 	property :created_at, DateTime
@@ -49,22 +49,21 @@ end
 class Committee
 	include DataMapper::Resource
 
-	belongs_to :campaign
+	belongs_to :campaign, :required => false
 	# has n, :independent_expenditures
 
 	property :id, Serial
 	property :remote_id, String
-	property :name, String
+	property :name, Text
 	property :state, String
 	property :district, Integer
 	property :party, String
 	property :super_pac, Boolean
-	property :sponsor_name, String
+	property :sponsor_name, Text
 	property :filing_frequency, String
 	property :interest_group, String
 	property :committee_type, String
 	property :designation, String
-	property :total_receipts, Float
 	property :total_receipts, Float
 	property :total_contributions, Float
 	property :total_from_individuals, Float

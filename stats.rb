@@ -1,15 +1,18 @@
+
 class Campaign
+
+	DEFAULT_LIMIT = 10
 
 	def self.most_supported
 		campaigns_with_expenditures.sort do |first_campaign, second_campaign|
 			first_campaign.total_expenditures(:support_or_oppose => 'S') <=> second_campaign.total_expenditures(:support_or_oppose => 'S')
-		end.reverse
+		end.reverse[0..DEFAULT_LIMIT]
 	end
 
 	def self.most_opposed
 		campaigns_with_expenditures.sort do |first_campaign, second_campaign|
 			first_campaign.total_expenditures(:support_or_oppose => 'O') <=> second_campaign.total_expenditures(:support_or_oppose => 'O')
-		end.reverse
+		end.reverse[0..DEFAULT_LIMIT]
 	end
 
 	def total_expenditures(options={})

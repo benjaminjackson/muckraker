@@ -20,10 +20,11 @@ class Muckraker::Bootstrap
        	props = Campaign.properties.to_ary.map { |p| p.name }.select { |p| c.respond_to? p }
 
         @candidates.each do |candidate|
-        	attrs = Hash[props.map { |name|	[name, candidate.send(name)] }]
+            full_candidate = CampaignCash::Candidate.find(candidate.id)
+        	attrs = Hash[props.map { |name|	[name, full_candidate.send(name)] }]
         	attrs['id'] = nil
-        	attrs['remote_id'] = candidate.id
-        	Campaign.first_or_create({:remote_id => candidate.id}, attrs)
+        	attrs['remote_id'] = full_candidate.id
+        	Campaign.first_or_create({:remote_id => full_candidate.id}, attrs)
         end
 	end
 

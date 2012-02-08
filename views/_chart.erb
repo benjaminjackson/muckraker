@@ -1,0 +1,39 @@
+<% chart_type ||= "PieChart" %>
+
+<div id="<%= chart_name %>"></div>
+
+<script type="text/javascript">
+    google.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+
+        // Create the data table.
+        var data = new google.visualization.DataTable();
+
+        <% columns[:names].each_with_index do |column_name, column_index| %>
+        data.addColumn('<%= columns[:types][column_index] %>', '<%= column_name.gsub("\'", "\\\'") %>');
+        <% end %>
+
+        data.addRows([
+        <% legend.length.times do |i| %>
+            <% data_point = data[i] %>
+            <% data_point = data_point.join(",") if data.kind_of?(Array) %>
+            ['<%= legend[i].gsub("\'", "\\\'") %>', <%= data_point %>],
+        <% end %>
+        ]);
+
+        // Set chart options
+        var options = {'title':'<%= title %>', 'width':600, 'height':400};
+        <% if chart_type == "GeoMap" %>
+        options['dataMode'] = 'regions';
+        options['region'] = 'US';
+        <% end %>
+        <% if colors %>
+        options['colors'] = <%= colors.inspect %>;
+        <% end %>
+
+        // Instantiate and draw our chart, passing in some options.
+        var chart = new google.visualization.<%= chart_type %>(document.getElementById('<%= chart_name %>'));
+        chart.draw(data, options);
+    }
+</script>

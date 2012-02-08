@@ -18,7 +18,7 @@ get '/' do
 	@most_supported_campaigns = Campaign.most_supported
 	@most_supported_campaigns_data = [
 		{'name' => 'Total Expenditures', 'data' => @most_supported_campaigns.map { |campaign| campaign.total_expenditures(:support_or_oppose => 'S') } },
-		{'name' => 'Total Disbursements', 'data' => @most_supported_campaigns.map { |campaign| campaign.total_disbursements } }
+		{'name' => 'Total Disbursements of Campaign', 'data' => @most_supported_campaigns.map { |campaign| campaign.total_disbursements } }
 	]
 	@most_supported_campaigns_disbursements_data = @most_supported_campaigns.map do |campaign|
 		campaign.total_disbursements
@@ -26,7 +26,6 @@ get '/' do
 	@most_opposed_campaigns = Campaign.most_opposed
 	@most_opposed_campaigns_data = [
 		{'name' => 'Total Expenditures', 'data' => @most_opposed_campaigns.map { |campaign| campaign.total_expenditures(:support_or_oppose => 'O') } },
-		{'name' => 'Total Disbursements', 'data' => @most_opposed_campaigns.map { |campaign| campaign.total_disbursements } }
 	]
   	erb :index
 end

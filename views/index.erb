@@ -9,8 +9,7 @@
 								 :data => @most_supported_campaigns_data,
 								 :title => "Most Supported Campaigns",
 								 :chart_name => "most_supported_campaigns",
-								 :pie_colors => @most_supported_campaigns.map { |c| candidate_party_color(c) },
-								 :columns => @columns } %>
+								 :pie_colors => @most_supported_campaigns.map { |c| candidate_party_color(c) } %>
 
 <hr>
 
@@ -19,6 +18,5 @@
 								 :data => @most_opposed_campaigns_data,
 								 :title => "Most opposed Campaigns",
 								 :chart_name => "most_opposed_campaigns",
-								 :pie_colors => @most_opposed_campaigns.map { |c| candidate_party_color(c) },
-								 :columns => @columns } %>
+								 :pie_colors => @most_opposed_campaigns.map { |c| candidate_party_color(c) } } %>
 </div>

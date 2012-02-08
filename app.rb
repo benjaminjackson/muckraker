@@ -16,11 +16,17 @@ get '/' do
 	@columns = { :names => ['Campaign', 'Amount'], :types => ['string', 'number'] }
 	@most_supported_campaigns = Campaign.most_supported
 	@most_supported_campaigns_data = @most_supported_campaigns.map do |campaign|
-		[campaign.total_expenditures(:support_or_oppose => 'S'), campaign.total_disbursements]
+		campaign.total_expenditures(:support_or_oppose => 'S')
+	end
+	@most_supported_campaigns_disbursements_data = @most_supported_campaigns.map do |campaign|
+		campaign.total_disbursements
 	end
 	@most_opposed_campaigns = Campaign.most_opposed
 	@most_opposed_campaigns_data = @most_opposed_campaigns.map do |campaign|
-		[campaign.total_expenditures(:support_or_oppose => 'O'), campaign.total_disbursements]
+		campaign.total_expenditures(:support_or_oppose => 'O')
+	end
+	@most_opposed_campaigns_disbursements_data = @most_opposed_campaigns.map do |campaign|
+		campaign.total_disbursements
 	end
   	erb :index
 end

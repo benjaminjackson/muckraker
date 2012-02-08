@@ -5,42 +5,45 @@
 <div id="<%= chart_name %>_pie" class="span4"></div>
 </div>
 <script type="text/javascript">
-    google.setOnLoadCallback(drawChart);
 
-    function drawChart() {
+var chart1; // globally available
+$(document).ready(function() {
+  chart1 = new Highcharts.Chart({
+     chart: {
+        renderTo: '<%= chart_name %>',
+        defaultSeriesType: 'bar'
+    },
+    title: {
+        text: '<%= title %>'
+    },
+    xAxis: {
+        categories: <%= legend.inspect %>,
+        title: {
+            text: null
+        }
+    },
+    tooltip: {
+        formatter: function () {
+            return 'Amount: ' + '$' + Highcharts.numberFormat(this.y, 0);
+        }
+    },
+    yAxis: {
+        min: 0,
+        title: {
+            align: 'high',
+            text: 'Amount'
+        },
+        labels: {
+            formatter: function() {
+                return '$' + Highcharts.numberFormat(this.value/1000000, 0) +'M ';
+            }
+        }
 
-        // Create the data table.
-        var data = new google.visualization.DataTable();
-
-        <% columns[:names].each_with_index do |column_name, column_index| %>
-        data.addColumn('<%= columns[:types][column_index] %>', '<%= column_name.gsub("\'", "\\\'") %>');
-        <% end %>
-
-        data.addRows([
-        <% legend.length.times do |i| %>
-            <% data_point = data[i] %>
-            <% data_point = data_point.join(",") if data.kind_of?(Array) %>
-            ['<%= legend[i].gsub("\'", "\\\'") %>', <%= data_point %>],
-        <% end %>
-        ]);
-
-        // Set chart options
-        var options = {'width':570, 'height':240};
-        <% if chart_type == "GeoMap" %>
-        options['dataMode'] = 'regions';
-        options['region'] = 'US';
-        <% end %>
-
-        // Instantiate and draw our chart, passing in some options.
-        var chart = new google.visualization.<%= chart_type %>(document.getElementById('<%= chart_name %>'));
-        chart.draw(data, options);
-
-        <% if pie_colors %>
-        options['colors'] = <%= pie_colors.inspect %>;
-        <% end %>
-        options['width'] = 370;
-
-        var chart = new google.visualization.PieChart(document.getElementById('<%= chart_name %>_pie'));
-        chart.draw(data, options);
-    }
+    },
+    series: [{
+        name: 'Amount',
+        data: <%= data.inspect %>
+        }]
+    });
+});
 </script>

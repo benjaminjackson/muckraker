@@ -26,6 +26,18 @@ get '/' do
   	erb :index
 end
 
+get '/527s' do
+	@committees = Committee.all.sort { |first, second| first.total_receipts <=> second.total_receipts }.reverse[0..10]
+	@committees_data = [
+		{'name' => 'Total Receipts', 'data' => @committees.map { |committee| committee.total_receipts } },
+		{'name' => 'Total Contributions', 'data' => @committees.map { |committee| committee.total_contributions } },
+		{'name' => 'Total from Individuals', 'data' => @committees.map { |committee| committee.total_from_individuals } },
+		{'name' => 'Total from PACs', 'data' => @committees.map { |committee| committee.total_from_pacs } }
+	]
+	erb :'527'
+end
+
+
 get '/*' do
   File.read(File.join('public', '404.html'))
 end

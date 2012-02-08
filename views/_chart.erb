@@ -8,42 +8,50 @@
 
 var chart1; // globally available
 $(document).ready(function() {
-  chart1 = new Highcharts.Chart({
-     chart: {
-        renderTo: '<%= chart_name %>',
-        defaultSeriesType: 'bar'
-    },
-    title: {
-        text: '<%= title %>'
-    },
-    xAxis: {
-        categories: <%= legend.inspect %>,
-        title: {
-            text: null
-        }
-    },
-    tooltip: {
-        formatter: function () {
-            return 'Amount: ' + '$' + Highcharts.numberFormat(this.y, 0);
-        }
-    },
-    yAxis: {
-        min: 0,
-        title: {
-            align: 'high',
-            text: 'Amount'
-        },
-        labels: {
-            formatter: function() {
-                return '$' + Highcharts.numberFormat(this.value/1000000, 0) +'M ';
+    Highcharts.setOptions({
+        chart: {
+            style: {
+                fontFamily: '"Helvetica Neue",Helvetica,Arial,sans-serif'
             }
         }
-
-    },
-    series: [{
-        name: 'Amount',
-        data: <%= data.inspect %>
-        }]
     });
+
+    chart1 = new Highcharts.Chart({
+       chart: {
+        renderTo: '<%= chart_name %>',
+        defaultSeriesType: 'bar',
+        },
+        title: null,
+        xAxis: {
+            opposite: true,
+            categories: <%= legend.inspect %>,
+            title: {
+                text: null
+            }
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                align: 'high',
+                text: 'Amount'
+            },
+            labels: {
+                formatter: function() {
+                    return '$' + Highcharts.numberFormat(this.value/1000000, 0) +'M ';
+                }
+            }
+
+        },
+        tooltip: {
+            formatter: function () {
+                return 'Amount: ' + '$' + Highcharts.numberFormat(this.y, 0);
+            }
+        },
+        series: [{
+            name: 'Amount',
+            data: <%= data.inspect %>
+            }]
+        }
+    );
 });
 </script>

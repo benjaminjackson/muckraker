@@ -1,12 +1,24 @@
 <html>
-	<head>
-		<title><%= @title.nil? ? "Muckraker" : "Muckraker: #{@title}" %></title>
-		<script type="text/javascript" src="https://www.google.com/jsapi"></script>
-		<script type="text/javascript">
-			google.load('visualization', '1.0', {'packages':['corechart', 'geomap']});
-		</script>
-	</head>
-	<body>
+<head>
+	<title><%= @title.nil? ? "Muckraker" : "Muckraker: #{@title}" %></title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <!-- <link href="/css/bootstrap-responsive.css" rel="stylesheet"> -->
+    <script src="/js/jquery.1.7.1.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+	<script type="text/javascript">
+		google.load('visualization', '1.0', {'packages':['corechart', 'geomap']});
+	</script>
+	<style type="text/css">
+		body {
+			padding: 90px 0px 40px 0px;
+		}
+	</style>
+</head>
+<body>
+	<%= partial "navigation" %>
+    <div class="container-fluid">
 		<%= yield %>
-	</body>
+	</div>
+</body>
 </html>

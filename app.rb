@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'sinatra'
+require "sinatra/reloader" if development?
 require './lib/muckraker'
 require './models'
 require './stats'
@@ -18,6 +19,9 @@ get '/' do
 		[campaign.total_expenditures(:support_or_oppose => 'S'), campaign.total_disbursements]
 	end
 	@most_opposed_campaigns = Campaign.most_opposed
+	@most_opposed_campaigns_data = @most_opposed_campaigns.map do |campaign|
+		[campaign.total_expenditures(:support_or_oppose => 'O'), campaign.total_disbursements]
+	end
   	erb :index
 end
 

@@ -1,7 +1,9 @@
-<% chart_type ||= "PieChart" %>
+<% chart_type ||= "ColumnChart" %>
 
-<div id="<%= chart_name %>"></div>
-
+<div class="row">
+<div id="<%= chart_name %>" class="span6"></div>
+<div id="<%= chart_name %>_pie" class="span4"></div>
+</div>
 <script type="text/javascript">
     google.setOnLoadCallback(drawChart);
 
@@ -23,17 +25,22 @@
         ]);
 
         // Set chart options
-        var options = {'title':'<%= title %>', 'width':600, 'height':400};
+        var options = {'width':570, 'height':240};
         <% if chart_type == "GeoMap" %>
         options['dataMode'] = 'regions';
         options['region'] = 'US';
         <% end %>
-        <% if colors %>
-        options['colors'] = <%= colors.inspect %>;
-        <% end %>
 
         // Instantiate and draw our chart, passing in some options.
         var chart = new google.visualization.<%= chart_type %>(document.getElementById('<%= chart_name %>'));
+        chart.draw(data, options);
+
+        <% if pie_colors %>
+        options['colors'] = <%= pie_colors.inspect %>;
+        <% end %>
+        options['width'] = 370;
+
+        var chart = new google.visualization.PieChart(document.getElementById('<%= chart_name %>_pie'));
         chart.draw(data, options);
     }
 </script>

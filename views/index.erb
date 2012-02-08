@@ -1,9 +1,24 @@
-<h2>Welcome to Muckraker</h2>
+<div class="span12">
+<h1>Welcome to Muckraker</h1>
 <p>Choose a chart from the list below to get started</p>
 
+<hr>
+
+<h3>Most Supported Campaigns</h3>
 <%= partial :chart, :locals => { :legend => @most_supported_campaigns.map { |c| c.name },
 								 :data => @most_supported_campaigns_data,
 								 :title => "Most Supported Campaigns",
 								 :chart_name => "most_supported_campaigns",
-								 :colors => @most_supported_campaigns.map { |c| candidate_party_color(c) },
+								 :pie_colors => @most_supported_campaigns.map { |c| candidate_party_color(c) },
 								 :columns => @columns } %>
+
+<hr>
+
+<h3>Most Opposed Campaigns</h3>
+<%= partial :chart, :locals => { :legend => @most_opposed_campaigns.map { |c| c.name },
+								 :data => @most_opposed_campaigns_data,
+								 :title => "Most opposed Campaigns",
+								 :chart_name => "most_opposed_campaigns",
+								 :pie_colors => @most_opposed_campaigns.map { |c| candidate_party_color(c) },
+								 :columns => @columns } %>
+</div>

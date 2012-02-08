@@ -16,14 +16,14 @@ $(document).ready(function() {
         }
     });
 
-    chart1 = new Highcharts.Chart({
-       chart: {
-        renderTo: '<%= chart_name %>',
-        defaultSeriesType: 'bar',
-        },
+    var chart = new Highcharts.Chart({
+        chart: {
+            renderTo: '<%= chart_name %>',
+            defaultSeriesType: 'column',
+            },
         title: null,
         xAxis: {
-            opposite: true,
+            // opposite: true,
             categories: <%= legend.inspect %>,
             title: {
                 text: null
@@ -46,6 +46,11 @@ $(document).ready(function() {
             formatter: function () {
                 return 'Amount: ' + '$' + Highcharts.numberFormat(this.y, 0);
             }
+        },
+        plotOptions: {
+           column: {
+              stacking: 'normal',
+           }
         },
         series: <%= data.to_json %>
         });

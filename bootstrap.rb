@@ -59,14 +59,15 @@ class Muckraker::Bootstrap
 		e = CampaignCash::IndependentExpenditure.new
        	props = IndependentExpenditure.properties.to_ary.map { |p| p.name }.select { |p| e.respond_to? p }
        	total_expenditures = 0
-        Campaign.all.to_a[3478..-1].each_with_index do |campaign, index|
+        Campaign.all.each_with_index do |campaign, index|
             puts "Loading expenditures for candidate #{index + 1} of #{Campaign.count}: #{campaign.name}, #{campaign.office}..."
             expenditures = CampaignCash::IndependentExpenditure.candidate(campaign.remote_id, 2012)
             total_expenditures += expenditures.length
             expenditures.each do |exp|
         		attrs = Hash[props.map { |name| [name, exp.send(name)] }]
         		attrs[:amount] = attrs[:amount].to_f * 10
-        		attrs[:campaign] = campaign
+                attrs[:campaign] = campaign
+        		attrs[:committee] = Committee.get(:remote_id => exp.committee)
                 attrs.keys.each { |key| attrs[key] = attrs[key].to_f if key.to_s.include?('total_') }
             	independent_exp = IndependentExpenditure.first_or_create({:transaction_id => attrs[:transaction_id], :date_received => attrs[:date_received]}, attrs)
             end

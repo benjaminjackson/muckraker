@@ -1,0 +1,19 @@
+<div class="span12">
+	<div class="row-fluid">
+		<div class="span6">
+			<h1><%= @committee.name.downcase.titlecase %></h1>
+		</div>
+	</div>
+
+	<hr>
+
+	<div class="row-fluid">
+		<div class="span6">
+			<h3>Breakdown of Expenditures by Purpose</h3>
+			<%= partial :chart, :locals => { :legend => @purposes.map { |key, value| key },
+											 :data => @data,
+											 :chart_name => "expenditures_by_purpose" } %>
+		</div>
+	</div>
+
+</div>

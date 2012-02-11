@@ -1,7 +1,12 @@
+module Muckraker
+	module Constants
+		DEFAULT_LIMIT = 10
+	end
+end
 
 class Campaign
 
-	DEFAULT_LIMIT = 10
+	include Muckraker::Constants
 
 	def self.most_supported
 		campaigns_with_expenditures.sort do |first_campaign, second_campaign|
@@ -31,4 +36,16 @@ class Campaign
 		IndependentExpenditure.all(:campaign => Campaign.all).map { |exp| exp.campaign }.sort.uniq
 	end
 
+end
+
+class Committee
+
+	include Muckraker::Constants
+
+	def total_independent_expenditures support_or_oppose=nil
+		return 0 if campaign.nil? # temporary! need to figure out why independent exp association is nil
+		expenditures = campaign.independent_expenditures
+		expenditures = expenditures.reject { |exp| exp.support_or_oppose != support_or_oppose } unless support_or_oppose.nil?
+		expenditures.inject(0) { |sum, exp| sum + exp.amount }
+	end
 end

@@ -1,22 +1,26 @@
-<div class="span12">
-	<div class="row">
-		<div class="span6">
+<div class="row-fluid">
+	<div class="span12">
+		<div class="hero-unit">
 			<h1>527 Organizations</h1>
 			<p>A 527 organization or 527 group is a type of American tax-exempt organization named after "Section 527" of the U.S. Internal Revenue Code. A 527 group is created primarily to influence the selection, nomination, election, appointment or defeat of candidates to federal, state or local public office. <smaller>Source: <a href="http://en.wikipedia.org/wiki/527_organization">Wikipedia</a></smaller></p>
 		</div>
+</div>
+<div class="row-fluid">
+	<div class="span12">
+		<h3>527 Organizations With the Most Contributions in 2012</h3>
+		<%= partial :chart, :locals => { :legend => @committees.map { |c| c.name.downcase.titlecase + " (#{c.party[0]})" },
+										 :data => @committees_data,
+										 :stacked => true,
+										 :chart_name => "committees" } %>
 	</div>
-
-	<hr>
-
-	<div class="row">
-		<div class="span6">
-			<h3>Biggest 527 Organizations</h3>
-			<%= partial :chart, :locals => { :legend => @committees.map { |c| c.name.downcase.titlecase + " (#{c.party[0]})" },
-											 :data => @committees_data,
-											 :title => "Biggest Committees",
-											 :chart_name => "committees",
-											 :pie_colors => @committees.map { |c| candidate_party_color(c) } } %>
-		</div>
+</div>
+<div class="row-fluid">
+	<div class="span12">
+		<h3>Top Spenders 2012</h3>
+		<%= partial :chart, :locals => { :legend => @top_expenditures.map { |c| c.name.downcase.titlecase + " (#{c.party[0]})" },
+										 :data => @top_expenditures_data,
+										 :urls => @top_expenditures.map { |c| "/committee/#{c.id}"},
+										 :stacked => true,
+										 :chart_name => "top_spenders" } %>
 	</div>
-
 </div>

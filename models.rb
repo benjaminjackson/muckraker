@@ -32,7 +32,7 @@ end
 class IndependentExpenditure
 	include DataMapper::Resource
 
-	# belongs_to :committee
+	belongs_to :committee, :required => false
 	belongs_to :campaign
 
 	property :id, Serial
@@ -50,7 +50,7 @@ class Committee
 	include DataMapper::Resource
 
 	belongs_to :campaign, :required => false
-	# has n, :independent_expenditures
+	has n, :independent_expenditures
 
 	property :id, Serial
 	property :remote_id, String

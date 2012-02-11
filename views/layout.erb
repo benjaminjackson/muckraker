@@ -1,16 +1,27 @@
 <html>
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title><%= @title.nil? ? "Muckraker" : "Muckraker: #{@title}" %></title>
+	<link href='http://fonts.googleapis.com/css?family=PT+Sans|PT+Sans+Narrow|Asap' rel='stylesheet' type='text/css'>
     <link href="/css/bootstrap.min.css" rel="stylesheet">
-    <!-- <link href="/css/bootstrap-responsive.css" rel="stylesheet"> -->
+    <link href="/css/bootstrap-responsive.css" rel="stylesheet">
+
+    <!-- IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
     <script src="/js/jquery.1.7.1.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript" src="/js/highcharts/highcharts.js"></script>
 	<style type="text/css">
-		body {
-			padding: 90px 0px 40px 0px;
-		}
-	</style>
+	    @media (min-width: 980px) {
+		    body {
+	        	padding-top: 60px;
+		        padding-bottom: 40px;
+	    	}
+	    }
+    </style>
 </head>
 <body>
 	<%= partial "navigation" %>

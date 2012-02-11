@@ -1,9 +1,9 @@
 <% chart_type ||= "ColumnChart" %>
+<% urls ||= nil %>
+<% stacked ||= nil %>
 
-<div class="row">
-<div id="<%= chart_name %>" class="span6"></div>
-<div id="<%= chart_name %>_pie" class="span4"></div>
-</div>
+<div id="<%= chart_name %>"></div>
+
 <script type="text/javascript">
 
 var chart1; // globally available
@@ -11,19 +11,80 @@ $(document).ready(function() {
     Highcharts.setOptions({
         chart: {
             style: {
-                fontFamily: '"Helvetica Neue",Helvetica,Arial,sans-serif'
+                fontFamily: '"PT Sans", sans-serif;'
             }
         }
     });
+
+    <% unless urls.nil? %>
+    var imagesMap = {};
+    var clickThroughURLs = <%= urls.inspect %>;
+    function drawImages() {
+        var chart = this;
+        for (var i = 0; i < chart.series[0].data.length; i++) {
+            var URLIndex = i;
+            var imageWidth = 18,
+                x = chart.plotLeft + chart.xAxis[0].translate(i, false) - imageWidth / 2,
+                y = chart.plotTop - imageWidth / 2;
+            imagesMap[i] = chart.renderer.image('/img/glyphicons/eye.png', x, y, imageWidth, imageWidth)
+                .on('click', function(e) {
+                    location.href = clickThroughURLs[e.target.index]
+                })
+                .attr({
+                    zIndex: 100
+                })
+                .css({
+                    cursor: 'pointer'
+                })
+                .add();
+            imagesMap[i].element.index = i;
+        }
+    };
+
+    function alignImages() {
+        var chart = this;
+        for (var i = 0; i < chart.series[0].data.length; i++) {
+            var imageWidth = 18,
+                x = chart.plotLeft + chart.xAxis[0].translate(i, false) - imageWidth / 2,
+                y = chart.plotTop - imageWidth / 2;
+
+            imagesMap[i].attr({
+                x: x,
+                y: y});
+        }
+    }
+    <% end %>
+
 
     var chart = new Highcharts.Chart({
         chart: {
             renderTo: '<%= chart_name %>',
             defaultSeriesType: 'column',
-            },
+            spacingLeft: 0,
+            spacingTop: 55,
+            <% unless urls.nil? %>
+            events: {
+                load: drawImages,
+                redraw: alignImages
+            }
+            <% end %>
+        },
+        legend: {
+            align: "left",
+            verticalAlign: "top",
+            floating: true,
+            y: -45,
+            borderWidth: 0
+        },
         title: null,
         xAxis: {
-            // opposite: true,
+            labels: {
+                rotation: -30,
+                align: 'right',
+                style: {
+                    font: 'normal 9px "Helvetica Neue", Helvetica, Arial, sans-serif'
+                }
+            },
             categories: <%= legend.inspect %>,
             title: {
                 text: null
@@ -47,11 +108,13 @@ $(document).ready(function() {
                 return 'Amount: ' + '$' + Highcharts.numberFormat(this.y, 0);
             }
         },
+        <% if stacked %>
         plotOptions: {
            column: {
               stacking: 'normal',
            }
         },
+        <% end %>
         series: <%= data.to_json %>
         });
 });

@@ -31,10 +31,28 @@ get '/527s' do
 		{'name' => 'Total from Individuals', 'data' => @committees.map { |committee| committee.total_from_individuals } },
 		{'name' => 'Total from PACs', 'data' => @committees.map { |committee| committee.total_from_pacs } }
 	]
-
+	@top_expenditures = Committee.all.sort { |first, second| first.total_independent_expenditures <=> second.total_independent_expenditures }.reverse[0..10]
+	@top_expenditures_data = [
+		{'name' => 'Support Ads', 'data' => @top_expenditures.map { |committee| committee.total_independent_expenditures('S') } },
+		{'name' => 'Attack Ads', 'data' => @top_expenditures.map { |committee| committee.total_independent_expenditures('O') } }
+	]
 	erb :'527'
 end
 
+get '/committee/:id' do
+	@committee = Committee.get(params[:id])
+	@expenditures = @committee.campaign.independent_expenditures
+	@purposes = {}
+	@expenditures.each do |exp|
+		@purposes[exp.purpose] ||= 0;
+		@purposes[exp.purpose] += exp.amount;
+	end
+	@data = [
+		{'name' => 'Breakdown of Expenditures by Purpose', 'data' => @purposes.map { |key, value| value } }
+	]
+
+	erb :committee
+end
 
 get '/*' do
   File.read(File.join('public', '404.html'))

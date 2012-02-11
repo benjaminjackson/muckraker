@@ -2,7 +2,6 @@ require 'rubygems'
 require 'sinatra'
 require "sinatra/reloader" if development?
 require 'json'
-require './lib/muckraker'
 require './models'
 require './stats'
 require './partials'

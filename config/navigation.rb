@@ -3,7 +3,7 @@ SimpleNavigation::Configuration.run do |navigation|
 
     navigation.items do |primary|
 		primary.dom_class = 'nav'
-	    primary.item :campaigns, 'Campaigns', '/'
+	    primary.item :campaigns, 'Campaigns', '/campaigns'
 	    primary.item :committees, 'Committees', '/committees' do |secondary|
 			secondary.dom_class = 'nav nav-list'
 	    	secondary.item :all, "Highest Contributions", '/committees'

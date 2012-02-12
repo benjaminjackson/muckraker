@@ -20,6 +20,10 @@ before do
 end
 
 get '/' do
+
+end
+
+get '/campaigns' do
 	@most_supported_campaigns = Campaign.most_supported
 	@most_supported_campaigns_data = [
 		{'name' => 'Total Expenditures', 'data' => @most_supported_campaigns.map { |campaign| campaign.total_expenditures(:support_or_oppose => 'S') } },
@@ -29,7 +33,7 @@ get '/' do
 	@most_opposed_campaigns_data = [
 		{'name' => 'Total Expenditures', 'data' => @most_opposed_campaigns.map { |campaign| campaign.total_expenditures(:support_or_oppose => 'O') } },
 	]
-  	erb :index
+  	erb :campaigns
 end
 
 get '/committees' do

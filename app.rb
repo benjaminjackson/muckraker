@@ -38,6 +38,13 @@ get '/committees' do
 		{'name' => 'Total from Individuals', 'data' => @committees.map { |committee| committee.total_from_individuals } },
 		{'name' => 'Total from PACs', 'data' => @committees.map { |committee| committee.total_from_pacs } }
 	]
+	erb :_chart, :locals => { :legend => @committees.map { |c| c.name.downcase.titlecase + " (#{c.party[0]})" },
+							 :data => @committees_data,
+							 :stacked => true,
+							 :chart_name => "top_contributions" }
+end
+
+get '/committees/spenders' do
 	@top_expenditures = Committee.all.to_a.reject { |c| c.campaign.nil? }.sort { |first, second|
 		first.total_independent_expenditures <=>
 		second.total_independent_expenditures
@@ -46,8 +53,13 @@ get '/committees' do
 		{'name' => 'Support Ads', 'data' => @top_expenditures.map { |committee| committee.total_independent_expenditures('S') } },
 		{'name' => 'Attack Ads', 'data' => @top_expenditures.map { |committee| committee.total_independent_expenditures('O') } }
 	]
-	erb :committees
+	erb :_chart, :locals => { :legend => @top_expenditures.map { |c| c.name.downcase.titlecase + " (#{c.party[0]})" },
+							  :data => @top_expenditures_data,
+							  :urls => @top_expenditures.map { |c| "/committee/#{c.id}"},
+							  :stacked => true,
+							  :chart_name => "top_expenditures" }
 end
+
 
 get '/committee/:id' do
 	@committee = Committee.get(params[:id])

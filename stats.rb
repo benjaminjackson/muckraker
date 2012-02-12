@@ -62,7 +62,7 @@ class Committee
 		return 0 if campaign.nil? # temporary! need to figure out why independent exp association is nil
 		conditions = { :campaign => campaign }
 		conditions[:support_or_oppose] = support_or_oppose unless support_or_oppose.nil?
-		IndependentExpenditure.sum(:amount, conditions)
+		IndependentExpenditure.sum(:amount, conditions).to_f
 	end
 
 end

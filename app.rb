@@ -32,7 +32,10 @@ get '/committees' do
 		{'name' => 'Total from Individuals', 'data' => @committees.map { |committee| committee.total_from_individuals } },
 		{'name' => 'Total from PACs', 'data' => @committees.map { |committee| committee.total_from_pacs } }
 	]
-	@top_expenditures = Committee.all.reject { |c| c.campaign.nil? }.sort { |first, second| first.total_independent_expenditures <=> second.total_independent_expenditures }.reverse[0..10]
+	@top_expenditures = Committee.all.to_a.reject { |c| c.campaign.nil? }.sort { |first, second|
+		first.total_independent_expenditures <=>
+		second.total_independent_expenditures
+	}.reverse[0..10]
 	@top_expenditures_data = [
 		{'name' => 'Support Ads', 'data' => @top_expenditures.map { |committee| committee.total_independent_expenditures('S') } },
 		{'name' => 'Attack Ads', 'data' => @top_expenditures.map { |committee| committee.total_independent_expenditures('O') } }

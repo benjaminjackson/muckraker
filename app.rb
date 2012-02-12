@@ -20,7 +20,7 @@ before do
 end
 
 get '/' do
-
+	erb :index
 end
 
 get '/campaigns' do

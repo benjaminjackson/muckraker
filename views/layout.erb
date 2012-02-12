@@ -27,22 +27,29 @@
 	<%= partial "navigation" %>
     <div class="container">
 		<div class="row-fluid">
+			<% if show_secondary_navigation? %>
 			<div class="span3">
-			<div class="well sidebar-nav">
-				<%= render_navigation(:level => 2) %>
-			</div>
-			<% if @sidebar_text %>
-			<p class='muted'><%= @sidebar_text %></p>
-			<% end %>
-		</div>
-		<div class="span9">
-			<div class="row">
-				<div class="span9">
-					<h1><%= active_navigation_item_name %></h1>
+				<div class="well sidebar-nav">
+					<%= render_navigation(:level => 2) %>
 				</div>
+				<% if @sidebar_text %>
+				<p class='muted'><%= @sidebar_text %></p>
+				<% end %>
 			</div>
+			<div class="span9">
+				<div class="row">
+					<div class="span9">
+						<h1><%= active_navigation_item_name %></h1>
+					</div>
+				</div>
 
-			<%= yield %>
+				<%= yield %>
+			</div>
+			<% else %>
+			<div class="span12">
+				<%= yield %>
+			</div>
+			<% end %>
 		</div>
 	</div>
 </body>

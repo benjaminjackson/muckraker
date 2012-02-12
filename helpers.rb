@@ -18,6 +18,10 @@ end
 
 module Helpers
 
+    def show_secondary_navigation?
+        request.path_info.match(/^\/?$/).nil?
+    end
+
 	def candidate_party_color candidate
 		return "#BE2500" if  candidate.party == "REP"
 		return "#2960D0" if  candidate.party == "DEM"

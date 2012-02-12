@@ -55,6 +55,16 @@ get '/committee/:id' do
 	erb :committee
 end
 
+get '/payees/?:party?' do
+	params[:party] = params[:party].upcase if params[:party]
+	@payees = Committee.top_payees(params[:party])
+	@payees_data = [
+		{'name' => 'Support Ads', 'data' => @payees.map { |payee_name| Committee.amount_spent_on_payee(payee_name, params[:party], 'S') } },
+		{'name' => 'Attack Ads', 'data' => @payees.map { |payee_name| Committee.amount_spent_on_payee(payee_name, params[:party], 'O') } }
+	]
+	erb :payees
+end
+
 get '/*' do
   File.read(File.join('public', '404.html'))
 end

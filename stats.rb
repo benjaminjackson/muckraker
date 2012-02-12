@@ -44,10 +44,25 @@ class Committee
 
 	include Muckraker::Constants
 
+	def self.top_payees(party=nil, support_or_oppose=nil)
+		payee_names = IndependentExpenditure.all(:fields => [:payee], :unique => true, :order => [:payee.asc])
+		payee_names.sort { |a, b|
+			amount_spent_on_payee(a.payee, party, support_or_oppose).to_f <=> amount_spent_on_payee(b.payee, party, support_or_oppose).to_f
+		}.map { |exp| exp.payee }.reverse[0..DEFAULT_LIMIT]
+	end
+
+	def self.amount_spent_on_payee(payee, party=nil, support_or_oppose=nil)
+		options = {}
+		options[:campaign] = {:party => party } unless party.nil?
+		options[:support_or_oppose] = support_or_oppose unless support_or_oppose.nil?
+		IndependentExpenditure.sum(:amount, options.merge(:payee => payee))
+	end
+
 	def total_independent_expenditures support_or_oppose=nil
 		return 0 if campaign.nil? # temporary! need to figure out why independent exp association is nil
 		conditions = { :campaign => campaign }
 		conditions[:support_or_oppose] = support_or_oppose unless support_or_oppose.nil?
 		IndependentExpenditure.sum(:amount, conditions)
 	end
+
 end

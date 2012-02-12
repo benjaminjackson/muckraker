@@ -70,6 +70,7 @@ module Muckraker
             		attrs = Hash[props.map { |name| [name, exp.send(name)] }]
             		attrs[:amount] = attrs[:amount].to_f * 10
                     attrs[:campaign] = campaign
+                    attrs[:payee] = attrs[:payee].gsub(',', '')
             		attrs[:committee] = Committee.get(:remote_id => exp.committee)
                     attrs.keys.each { |key| attrs[key] = attrs[key].to_f if key.to_s.include?('total_') }
                 	independent_exp = IndependentExpenditure.first_or_create({:transaction_id => attrs[:transaction_id], :date_received => attrs[:date_received]}, attrs)

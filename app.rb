@@ -56,6 +56,8 @@ get '/committee/:id' do
 end
 
 get '/payees/?:party?' do
+	@title = "Top Payees"
+	@title += " for #{params[:party] == 'dem' ? 'Democrats' : 'Republicans'}" if params[:party]
 	params[:party] = params[:party].upcase if params[:party]
 	@payees = Committee.top_payees(params[:party])
 	@payees_data = [

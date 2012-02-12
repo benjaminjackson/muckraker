@@ -4,20 +4,16 @@
 	</div>
 	<div class="span9">
 		<div class="row">
-			<div class="span3">
-				<h3>Top Payees</h3>
+			<div class="span6">
+				<h3><%= @title %></h3>
 			</div>
-			<div class="span2 offset3">
+			<div class="span2 offset1">
 				<div class="btn-group">
 					<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-						All Parties
+						Show Party
 						<span class="caret"></span>
 					</a>
-					<ul class="dropdown-menu">
-						<li><a href='/payees'>All Parties</a></li>
-						<li><a href='/payees/dem'>Democrats</a></li>
-						<li><a href='/payees/rep'>Republicans</a></li>
-					</ul>
+					<%= render_navigation(:level => 2) %>
 				</div>
 			</div>
 		</div>

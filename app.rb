@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'sinatra'
+require 'sinatra/simple-navigation'
 require "sinatra/reloader" if development?
 require 'json'
 require './models'
@@ -25,18 +26,18 @@ get '/' do
   	erb :index
 end
 
-get '/527s' do
+get '/committees' do
 	@committees = Committee.all.sort { |first, second| first.total_contributions <=> second.total_contributions }.reverse[0..10]
 	@committees_data = [
 		{'name' => 'Total from Individuals', 'data' => @committees.map { |committee| committee.total_from_individuals } },
 		{'name' => 'Total from PACs', 'data' => @committees.map { |committee| committee.total_from_pacs } }
 	]
-	@top_expenditures = Committee.all.sort { |first, second| first.total_independent_expenditures <=> second.total_independent_expenditures }.reverse[0..10]
+	@top_expenditures = Committee.all.reject { |c| c.campaign.nil? }.sort { |first, second| first.total_independent_expenditures <=> second.total_independent_expenditures }.reverse[0..10]
 	@top_expenditures_data = [
 		{'name' => 'Support Ads', 'data' => @top_expenditures.map { |committee| committee.total_independent_expenditures('S') } },
 		{'name' => 'Attack Ads', 'data' => @top_expenditures.map { |committee| committee.total_independent_expenditures('O') } }
 	]
-	erb :'527'
+	erb :committees
 end
 
 get '/committee/:id' do

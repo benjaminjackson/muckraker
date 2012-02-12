@@ -12,7 +12,8 @@ class Campaign
 
 	def self.most_supported
 		campaigns_with_expenditures.sort do |first_campaign, second_campaign|
-			first_campaign.total_expenditures(:support_or_oppose => 'S') <=> second_campaign.total_expenditures(:support_or_oppose => 'S')
+			first_campaign.total_expenditures(:support_or_oppose => 'S') + first_campaign.total_disbursements.to_i <=>
+			second_campaign.total_expenditures(:support_or_oppose => 'S') + second_campaign.total_disbursements.to_i
 		end.reverse[0..DEFAULT_LIMIT]
 	end
 

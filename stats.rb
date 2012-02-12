@@ -1,3 +1,5 @@
+require 'dm-aggregates'
+
 module Muckraker
 	module Constants
 		DEFAULT_LIMIT = 10
@@ -44,8 +46,8 @@ class Committee
 
 	def total_independent_expenditures support_or_oppose=nil
 		return 0 if campaign.nil? # temporary! need to figure out why independent exp association is nil
-		expenditures = campaign.independent_expenditures
-		expenditures = expenditures.reject { |exp| exp.support_or_oppose != support_or_oppose } unless support_or_oppose.nil?
-		expenditures.inject(0) { |sum, exp| sum + exp.amount }
+		conditions = { :campaign => campaign }
+		conditions[:support_or_oppose] = support_or_oppose unless support_or_oppose.nil?
+		IndependentExpenditure.sum(:amount, conditions)
 	end
 end

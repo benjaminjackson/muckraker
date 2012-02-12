@@ -24,17 +24,32 @@ get '/' do
 end
 
 get '/campaigns' do
-	@most_supported_campaigns = Campaign.most_supported
-	@most_supported_campaigns_data = [
-		{'name' => 'Total Expenditures', 'data' => @most_supported_campaigns.map { |campaign| campaign.total_expenditures(:support_or_oppose => 'S') } },
-		{'name' => 'Total Disbursements of Campaign', 'data' => @most_supported_campaigns.map { |campaign| campaign.total_disbursements } }
+	@campaigns = Campaign.money_magnets
+	@campaigns_data = [
+		{'name' => 'Total Expenditures Supporting', 'data' => @campaigns.map { |campaign| campaign.total_expenditures(:support_or_oppose => 'S') } },
+		{'name' => 'Total Expenditures Opposing', 'data' => @campaigns.map { |campaign| campaign.total_expenditures(:support_or_oppose => 'O') } }
 	]
-	@most_opposed_campaigns = Campaign.most_opposed
-	@most_opposed_campaigns_data = [
-		{'name' => 'Total Expenditures', 'data' => @most_opposed_campaigns.map { |campaign| campaign.total_expenditures(:support_or_oppose => 'O') } },
-	]
-  	erb :campaigns
+	erb :_chart, :locals => { :legend => @campaigns.map { |c| c.name.downcase.titlecase + " (#{c.party[0]})" },
+							  :data => @campaigns_data,
+							  :stacked => true }
 end
+
+get '/campaigns/:support_or_oppose' do
+	support = params[:support_or_oppose] == "supported"
+	support_or_oppose = support ? 'S' : 'O'
+	@campaigns = support ? Campaign.most_supported : Campaign.most_opposed
+	@campaigns_data = [
+		{'name' => 'Total Expenditures', 'data' => @campaigns.map { |campaign| campaign.total_expenditures(:support_or_oppose => support_or_oppose) } }
+	]
+	if support
+		@campaigns_data << {'name' => 'Total Disbursements of Campaign', 'data' => @campaigns.map { |campaign| campaign.total_disbursements } }
+
+	end
+	erb :_chart, :locals => { :legend => @campaigns.map { |c| c.name.downcase.titlecase + " (#{c.party[0]})" },
+							  :data => @campaigns_data,
+							  :stacked => support}
+end
+
 
 get '/committees' do
 	@committees = Committee.all.sort { |first, second| first.total_contributions <=> second.total_contributions }.reverse[0..10]

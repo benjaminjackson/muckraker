@@ -10,6 +10,13 @@ class Campaign
 
 	include Muckraker::Constants
 
+	def self.money_magnets
+		campaigns_with_expenditures.sort do |first_campaign, second_campaign|
+			first_campaign.total_expenditures <=>
+			second_campaign.total_expenditures
+		end.reverse[0..DEFAULT_LIMIT]
+	end
+
 	def self.most_supported
 		campaigns_with_expenditures.sort do |first_campaign, second_campaign|
 			first_campaign.total_expenditures(:support_or_oppose => 'S') + first_campaign.total_disbursements.to_i <=>

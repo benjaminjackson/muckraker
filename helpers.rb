@@ -22,7 +22,16 @@ module Helpers
 		return "#2960D0" if  candidate.party == "DEM"
 		"#BE622A"
 	end
-end
 
+    def truncate(text, length=20, end_string = ' ...')
+      text[0..(length-1)] + (text.length > length ? end_string : '')
+    end
+
+    def truncate_words(text, length=25, end_string = ' ...')
+      text.split do
+        words[0..(length-1)].join(' ') + (words.length > length ? end_string : '')
+      end
+    end
+end
 
 helpers Helpers

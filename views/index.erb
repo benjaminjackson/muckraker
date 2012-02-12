@@ -7,7 +7,7 @@
 
 </div>
 <div class="row-fluid">
-	<div class="span12">
+	<div class="span6">
 		<h3>Most Supported Campaigns</h3>
 		<%= partial :chart, :locals => { :legend => @most_supported_campaigns.map { |c| c.name.downcase.titlecase + " (#{c.party[0]})" },
 										 :data => @most_supported_campaigns_data,
@@ -15,9 +15,7 @@
 										 :stacked => true,
 										 :pie_colors => @most_supported_campaigns.map { |c| candidate_party_color(c) } } %>
 	</div>
-</div>
-<div class="row-fluid">
-	<div class="span12">
+	<div class="span6">
 		<h3>Most Opposed Campaigns</h3>
 		<%= partial :chart, :locals => { :legend => @most_opposed_campaigns.map { |c| c.name.downcase.titlecase + " (#{c.party[0]})" },
 										 :data => @most_opposed_campaigns_data,

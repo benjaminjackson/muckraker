@@ -60,7 +60,7 @@ $(document).ready(function() {
         chart: {
             renderTo: '<%= chart_name %>',
             defaultSeriesType: 'column',
-            spacingLeft: 0,
+            spacingLeft: 5,
             spacingTop: 55,
             <% unless urls.nil? %>
             events: {
@@ -68,6 +68,9 @@ $(document).ready(function() {
                 redraw: alignImages
             }
             <% end %>
+        },
+        credits: {
+            enabled: false
         },
         legend: {
             align: "left",
@@ -79,10 +82,10 @@ $(document).ready(function() {
         title: null,
         xAxis: {
             labels: {
-                rotation: -30,
+                rotation: -50,
                 align: 'right',
                 style: {
-                    font: 'normal 9px "Helvetica Neue", Helvetica, Arial, sans-serif'
+                    font: '10px "PT Sans", sans-serif'
                 }
             },
             categories: <%= legend.inspect %>,

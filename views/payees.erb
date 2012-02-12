@@ -1,22 +1,4 @@
-<div class="row-fluid">
-	<div class="span3">
-	<div class="well sidebar-nav">
-		<%= render_navigation(:level => 2) %>
-	</div>
-
-	<p class='muted'>Committees can spend money on ads which expressly advocate for the election or defeat of a candidate, as long as the expense is not done in coordination with the candidate, candidate's authorized committee or a political party.</p>
-
-	</div>
-	<div class="span9">
-		<div class="row">
-			<div class="span9">
-				<h1><%= @title %></h1>
-			</div>
-		</div>
-
-		<%= partial :chart, :locals => { :legend => @payees.map { |c| truncate(c) },
-										 :data => @payees_data,
-										 :chart_name => "top_payees",
-										 :stacked => true } %>
-	</div>
-</div>
+<%= partial :chart, :locals => { :legend => @payees.map { |c| truncate(c) },
+								 :data => @payees_data,
+								 :chart_name => "top_payees",
+								 :stacked => true } %>

@@ -13,6 +13,12 @@ DataMapper.setup(:default, ENV['DATABASE_URL'] || "sqlite://#{Dir.pwd}/muckraker
 DataMapper.finalize
 DataMapper.auto_upgrade!
 
+include AppHelpers
+
+before do
+	@info = info_for_page
+end
+
 get '/' do
 	@most_supported_campaigns = Campaign.most_supported
 	@most_supported_campaigns_data = [
@@ -67,6 +73,7 @@ get '/payees/?:party?' do
 		{'name' => 'Support Ads', 'data' => @payees.map { |payee_name| Committee.amount_spent_on_payee(payee_name, params[:party], 'S') } },
 		{'name' => 'Attack Ads', 'data' => @payees.map { |payee_name| Committee.amount_spent_on_payee(payee_name, params[:party], 'O') } }
 	]
+	@sidebar_text = "Committees can spend money on ads which expressly advocate for the election or defeat of a candidate, as long as the expense is not done in coordination with the candidate, candidate's authorized committee or a political party."
 	erb :payees
 end
 

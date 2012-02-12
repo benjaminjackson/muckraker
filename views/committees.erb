@@ -1,14 +1,6 @@
 <div class="row-fluid">
-	<div class="span12">
-		<div class="hero-unit">
-			<h1>527 Organizations</h1>
-			<p>A 527 organization or 527 group is a type of American tax-exempt organization named after "Section 527" of the U.S. Internal Revenue Code. A 527 group is created primarily to influence the selection, nomination, election, appointment or defeat of candidates to federal, state or local public office. <smaller>Source: <a href="http://en.wikipedia.org/wiki/527_organization">Wikipedia</a></smaller></p>
-		</div>
-	</div>
-</div>
-<div class="row-fluid">
 	<div class="span6">
-		<h3>Commitees with the Most Contributions in 2012</h3>
+		<h3>Committees with the Most Contributions in 2012</h3>
 		<%= partial :chart, :locals => { :legend => @committees.map { |c| c.name.downcase.titlecase + " (#{c.party[0]})" },
 										 :data => @committees_data,
 										 :stacked => true,

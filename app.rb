@@ -34,12 +34,12 @@ class Muckraker::Application < Sinatra::Application
 
 	get '/campaigns' do
 		@campaigns = Campaign.money_magnets
-		@campaigns_data = [
+		@data = [
 			{'name' => 'Total Expenditures Supporting', 'data' => @campaigns.map { |campaign| campaign.total_expenditures(:support_or_oppose => 'S') } },
 			{'name' => 'Total Expenditures Opposing', 'data' => @campaigns.map { |campaign| campaign.total_expenditures(:support_or_oppose => 'O') } }
 		]
 		erb :_chart, :locals => { :legend => @campaigns.map { |c| c.name.downcase.titlecase + " (#{c.party[0]})" },
-								  :data => @campaigns_data,
+								  :data => @data,
 								  :stacked => true }
 	end
 
@@ -47,40 +47,41 @@ class Muckraker::Application < Sinatra::Application
 		support = params[:support_or_oppose] == "supported"
 		support_or_oppose = support ? 'S' : 'O'
 		@campaigns = support ? Campaign.most_supported : Campaign.most_opposed
-		@campaigns_data = [
+		@data = [
 			{'name' => 'Total Expenditures', 'data' => @campaigns.map { |campaign| campaign.total_expenditures(:support_or_oppose => support_or_oppose) } }
 		]
 		if support
-			@campaigns_data << {'name' => 'Total Disbursements of Campaign', 'data' => @campaigns.map { |campaign| campaign.total_disbursements } }
+			@data << {'name' => 'Total Disbursements of Campaign', 'data' => @campaigns.map { |campaign| campaign.total_disbursements } }
 
 		end
 		erb :_chart, :locals => { :legend => @campaigns.map { |c| c.name.downcase.titlecase + " (#{c.party[0]})" },
-								  :data => @campaigns_data,
+								  :data => @data,
 								  :stacked => support}
 	end
 
 
 	get '/committees' do
 		@committees = Committee.all.sort { |first, second| first.total_contributions <=> second.total_contributions }.reverse[0..10]
-		@committees_data = [
+		@data = [
 			{'name' => 'Total from Individuals', 'data' => @committees.map { |committee| committee.total_from_individuals } },
 			{'name' => 'Total from PACs', 'data' => @committees.map { |committee| committee.total_from_pacs } }
 		]
 		erb :_chart, :locals => { :legend => @committees.map { |c| truncate(c.name.downcase.titlecase) + " (#{c.party[0]})" },
-								 :data => @committees_data,
+								 :data => @data,
 								 :stacked => true,
+								 :urls => @committees.map { |c| "/committee/#{c.id}"},
 								 :chart_name => "top_contributions" }
 	end
 
 	get '/committees/spenders' do
-		@top_spenders = Committee.top_spenders
-		@top_spenders_data = [
-			{'name' => 'Support Ads', 'data' => @top_spenders.map { |committee| committee.total_independent_expenditures('S') } },
-			{'name' => 'Attack Ads', 'data' => @top_spenders.map { |committee| committee.total_independent_expenditures('O') } }
+		@committees = Committee.committees
+		@data = [
+			{'name' => 'Support Ads', 'data' => @committees.map { |committee| committee.total_independent_expenditures('S') } },
+			{'name' => 'Attack Ads', 'data' => @committees.map { |committee| committee.total_independent_expenditures('O') } }
 		]
-		erb :_chart, :locals => { :legend => @top_spenders.map { |c| truncate(c.name.downcase.titlecase) + " (#{c.party[0]})" },
-								  :data => @top_spenders_data,
-								  :urls => @top_spenders.map { |c| "/committee/#{c.id}"},
+		erb :_chart, :locals => { :legend => @committees.map { |c| truncate(c.name.downcase.titlecase) + " (#{c.party[0]})" },
+								  :data => @data,
+								  :urls => @committees.map { |c| "/committee/#{c.id}"},
 								  :stacked => true }
 	end
 
@@ -117,12 +118,15 @@ class Muckraker::Application < Sinatra::Application
 		@title += " for #{params[:party] == 'dem' ? 'Democratic' : 'Republican'} Campaigns" if params[:party]
 		params[:party] = params[:party].upcase if params[:party]
 		@payees = Committee.top_payees(params[:party])
-		@payees_data = [
+		@data = [
 			{'name' => 'Support Ads', 'data' => @payees.map { |payee_name| Committee.amount_spent_on_payee(payee_name, params[:party], 'S') } },
 			{'name' => 'Attack Ads', 'data' => @payees.map { |payee_name| Committee.amount_spent_on_payee(payee_name, params[:party], 'O') } }
 		]
 		@sidebar_text = "Committees can spend money on ads which expressly advocate for the election or defeat of a candidate, as long as the expense is not done in coordination with the candidate, candidate's authorized committee or a political party."
-		erb :payees
+		erb :_chart, :locals => { :legend => @payees.map { |c| truncate(c) },
+								  :data => @data,
+								  :chart_name => "top_payees",
+								  :stacked => true }
 	end
 
 	get '/*' do

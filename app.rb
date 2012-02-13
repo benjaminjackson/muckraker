@@ -86,7 +86,7 @@ class Muckraker::Application < Sinatra::Application
 
 	get '/committee/:id' do
 		@committee = Committee.get(params[:id])
-		@expenditures = @committee.campaign.independent_expenditures
+		@expenditures = @committee.independent_expenditures
 		@purposes = {}
 		@expenditures.each do |exp|
 			@purposes[exp.purpose] ||= 0;

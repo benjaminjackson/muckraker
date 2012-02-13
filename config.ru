@@ -1,4 +1,4 @@
 require 'sinatra'
 require './app'
 
-run Sinatra::Application
+run Muckraker::Application

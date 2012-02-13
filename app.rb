@@ -8,7 +8,7 @@ require './stats'
 require './partials'
 require './helpers'
 
-DataMapper.setup(:default, ENV['DATABASE_URL'] || "sqlite://#{Dir.pwd}/muckraker.db")
+DataMapper.setup(:default, ENV['DATABASE_URL'] || "postgres://postgres:postgres@localhost/muckraker")
 
 DataMapper.finalize
 DataMapper.auto_upgrade!

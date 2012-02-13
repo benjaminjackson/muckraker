@@ -64,19 +64,15 @@ get '/committees' do
 end
 
 get '/committees/spenders' do
-	@top_expenditures = Committee.all.to_a.reject { |c| c.campaign.nil? }.sort { |first, second|
-		first.total_independent_expenditures <=>
-		second.total_independent_expenditures
-	}.reverse[0..10]
-	@top_expenditures_data = [
-		{'name' => 'Support Ads', 'data' => @top_expenditures.map { |committee| committee.total_independent_expenditures('S') } },
-		{'name' => 'Attack Ads', 'data' => @top_expenditures.map { |committee| committee.total_independent_expenditures('O') } }
+	@top_spenders = Committee.top_spenders
+	@top_spenders_data = [
+		{'name' => 'Support Ads', 'data' => @top_spenders.map { |committee| committee.total_independent_expenditures('S') } },
+		{'name' => 'Attack Ads', 'data' => @top_spenders.map { |committee| committee.total_independent_expenditures('O') } }
 	]
-	erb :_chart, :locals => { :legend => @top_expenditures.map { |c| truncate(c.name.downcase.titlecase) + " (#{c.party[0]})" },
-							  :data => @top_expenditures_data,
-							  :urls => @top_expenditures.map { |c| "/committee/#{c.id}"},
-							  :stacked => true,
-							  :chart_name => "top_expenditures" }
+	erb :_chart, :locals => { :legend => @top_spenders.map { |c| truncate(c.name.downcase.titlecase) + " (#{c.party[0]})" },
+							  :data => @top_spenders_data,
+							  :urls => @top_spenders.map { |c| "/committee/#{c.id}"},
+							  :stacked => true }
 end
 
 get '/committee/:id' do

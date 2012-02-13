@@ -66,11 +66,16 @@ class Committee
 		IndependentExpenditure.sum(:amount, options.merge(:payee => payee))
 	end
 
+	def self.top_spenders
+		committee_ids = IndependentExpenditure.all(:fields => [:committee_id], :unique => true, :order => [:committee_id.asc]).map { |e| e.committee_id}
+		committees = Committee.all(:id => committee_ids)
+		committees.sort { |a, b|
+			IndependentExpenditure.sum(:amount, :committee => a) <=> IndependentExpenditure.sum(:amount, :committee => b)
+		}.reverse[0..DEFAULT_LIMIT]
+	end
+
 	def total_independent_expenditures support_or_oppose=nil
-		return 0 if campaign.nil? # temporary! need to figure out why independent exp association is nil
-		conditions = { :campaign => campaign }
-		conditions[:support_or_oppose] = support_or_oppose unless support_or_oppose.nil?
-		IndependentExpenditure.sum(:amount, conditions).to_f
+		IndependentExpenditure.sum(:amount, :committee => self)
 	end
 
 end

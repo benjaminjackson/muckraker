@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'sinatra'
+require 'sinatra/cache'
 require 'sinatra/simple-navigation'
 require "sinatra/reloader" if development?
 require 'json'
@@ -7,6 +8,11 @@ require './models'
 require './stats'
 require './partials'
 require './helpers'
+
+set :root, Dir.pwd
+set :public_folder, "#{Dir.pwd}/public"
+
+register(Sinatra::Cache) unless development?
 
 DataMapper.setup(:default, ENV['DATABASE_URL'] || "postgres://postgres:postgres@localhost/muckraker")
 
@@ -17,6 +23,7 @@ include AppHelpers
 
 before do
 	@info = info_for_page
+	response.headers['Cache-Control'] = 'public, max-age=86400' # 24h cache expiry
 end
 
 get '/' do

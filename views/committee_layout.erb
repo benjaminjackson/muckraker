@@ -18,6 +18,10 @@
 				<div class="row">
 					<div class="span9">
 						<h1><%= active_navigation_item_name(:context => :committee) %></h1>
+						<h3><%= @committee.name.downcase.titlecase %></h3>
+						<% if @committee.campaign %>
+						<p>This committee is tied to the <%= @committee.campaign.name.downcase.titlecase %><%= @committee.campaign.office.titlecase %> campaign</p>
+						<% end %>
 					</div>
 				</div>
 

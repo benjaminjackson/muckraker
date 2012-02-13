@@ -86,6 +86,19 @@ class Muckraker::Application < Sinatra::Application
 
 	get '/committee/:id' do
 		@committee = Committee.get(params[:id])
+		@campaigns = @committee.top_campaigns
+		@data = [
+			{'name' => 'Support Ads', 'data' => @campaigns.map { |campaign| @committee.expenditures_supporting(campaign) } },
+			{'name' => 'Attack Ads', 'data' => @campaigns.map { |campaign| @committee.expenditures_opposing(campaign) } }
+		]
+		erb :_chart, :layout => :committee_layout,
+					 :locals => { :legend => @campaigns.map { |c| truncate(c.name.downcase.titlecase) + " (#{c.party[0]})" },
+								  :data => @data,
+								  :stacked => true }
+	end
+
+	get '/committee/:id/purpose' do
+		@committee = Committee.get(params[:id])
 		@expenditures = @committee.independent_expenditures
 		@purposes = {}
 		@expenditures.each do |exp|

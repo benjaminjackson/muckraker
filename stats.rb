@@ -68,10 +68,24 @@ class Committee
 
 	def self.top_spenders
 		committee_ids = IndependentExpenditure.all(:fields => [:committee_id], :unique => true, :order => [:committee_id.asc]).map { |e| e.committee_id}
-		committees = Committee.all(:id => committee_ids)
-		committees.sort { |a, b|
+		Committee.all(:id => committee_ids).sort { |a, b|
 			IndependentExpenditure.sum(:amount, :committee => a) <=> IndependentExpenditure.sum(:amount, :committee => b)
 		}.reverse[0..DEFAULT_LIMIT]
+	end
+
+	def top_campaigns
+		campaign_ids = IndependentExpenditure.all(:committee => self).all(:fields => [:campaign_id], :unique => true, :order => [:campaign_id.asc]).map { |e| e.campaign_id}
+		Campaign.all(:id => campaign_ids).sort { |a, b|
+			IndependentExpenditure.sum(:amount, :campaign => a, :committee => self).to_i <=> IndependentExpenditure.sum(:amount, :campaign => b, :committee => self).to_i
+		}.reverse[0..DEFAULT_LIMIT]
+	end
+
+	def expenditures_supporting campaign
+		IndependentExpenditure.sum(:amount, :campaign => campaign, :committee => self, :support_or_oppose => 'S')
+	end
+
+	def expenditures_opposing campaign
+		IndependentExpenditure.sum(:amount, :campaign => campaign, :committee => self, :support_or_oppose => 'O')
 	end
 
 	def total_independent_expenditures support_or_oppose=nil

@@ -74,7 +74,7 @@ class Muckraker::Application < Sinatra::Application
 	end
 
 	get '/committees/spenders' do
-		@committees = Committee.committees
+		@committees = Committee.top_spenders
 		@data = [
 			{'name' => 'Support Ads', 'data' => @committees.map { |committee| committee.total_independent_expenditures('S') } },
 			{'name' => 'Attack Ads', 'data' => @committees.map { |committee| committee.total_independent_expenditures('O') } }

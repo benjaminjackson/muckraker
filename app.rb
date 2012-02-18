@@ -22,7 +22,9 @@ class Muckraker::Application < Sinatra::Application
 
 	before do
 		@info = info_for_page
-		response.headers['Cache-Control'] = 'public, max-age=864000' # 10d cache expiry
+	    if settings.environment != :development
+		    cache_control :public, :max_age => 864000 # 10d cache expiry
+		end
 	end
 
 	get '/' do

@@ -22,9 +22,10 @@ class Muckraker::Application < Sinatra::Application
 
 	before do
 		@info = info_for_page
-	    if settings.environment != :development
+	    # if settings.environment != :development
+	    	response.headers['Last-Modified'] = Time.now.httpdate
 		    cache_control :public, :max_age => 600 # 10m cache expiry
-		end
+		# end
 	end
 
 	get '/' do

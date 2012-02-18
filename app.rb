@@ -23,7 +23,7 @@ class Muckraker::Application < Sinatra::Application
 	before do
 		@info = info_for_page
 	    if settings.environment != :development
-		    cache_control :public, :max_age => 864000 # 10d cache expiry
+		    cache_control :public, :max_age => 600 # 10m cache expiry
 		end
 	end
 

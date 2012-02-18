@@ -1,6 +1,5 @@
 require 'rubygems'
 require 'sinatra'
-require 'sinatra/cache'
 require 'sinatra/simple-navigation'
 require "sinatra/reloader" if development?
 require 'json'
@@ -13,8 +12,6 @@ require './helpers'
 class Muckraker::Application < Sinatra::Application
 	set :root, Dir.pwd
 	set :public_folder, "#{Dir.pwd}/public"
-
-	register(Sinatra::Cache) unless development?
 
 	DataMapper.setup(:default, ENV['DATABASE_URL'] || "postgres://postgres:postgres@localhost/muckraker")
 

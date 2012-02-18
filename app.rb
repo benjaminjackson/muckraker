@@ -25,7 +25,7 @@ class Muckraker::Application < Sinatra::Application
 
 	before do
 		@info = info_for_page
-		response.headers['Cache-Control'] = 'public, max-age=86400' # 24h cache expiry
+		response.headers['Cache-Control'] = 'public, max-age=864000' # 10d cache expiry
 	end
 
 	get '/' do

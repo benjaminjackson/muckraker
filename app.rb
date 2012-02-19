@@ -8,10 +8,6 @@ require './stats'
 require './partials'
 require './helpers'
 
-configure :production do
-  require 'newrelic_rpm'
-end
-
 class Muckraker::Application < Sinatra::Application
 	set :root, Dir.pwd
 	set :public_folder, "#{Dir.pwd}/public"

@@ -10,4 +10,3 @@ gem 'sinatra-simple-navigation'
 gem "rspec", ">= 2.8.0"
 gem "data_mapper", ">= 1.2.0"
 gem 'dm-postgres-adapter'
-gem 'newrelic_rpm'

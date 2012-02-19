@@ -64,7 +64,6 @@ GEM
     json (1.6.5)
     json_pure (1.6.5)
     multi_json (1.0.4)
-    newrelic_rpm (3.3.2)
     rack (1.4.1)
     rack-protection (1.2.0)
       rack
@@ -108,7 +107,6 @@ DEPENDENCIES
   data_mapper (>= 1.2.0)
   dm-postgres-adapter
   json (>= 1.6.5)
-  newrelic_rpm
   rspec (>= 2.8.0)
   sinatra (>= 1.3.1)
   sinatra-contrib (~> 1.3.1)
